@@ -2,11 +2,13 @@ const ServiceRequest = require("../models/ServiceRequest");
 
 // Create Service Request
 exports.createRequest = async (req, res) => {
+
   try {
+
     const { serviceType, vehicleType, location } = req.body;
 
     const request = new ServiceRequest({
-      userId: req.body.userId,
+      userId: req.user.id,
       serviceType,
       vehicleType,
       location
@@ -20,20 +22,30 @@ exports.createRequest = async (req, res) => {
     });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 };
 
 // Get All Requests
 exports.getRequests = async (req, res) => {
+
   try {
-    const requests = await ServiceRequest.find().populate("userId");
+
+    const userId = req.user.id;
+
+    const requests = await ServiceRequest.find({ userId });
 
     res.json(requests);
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 };
 // Update request status
 exports.updateStatus = async (req, res) => {
