@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 function MechanicDashboard() {
 
@@ -10,7 +11,6 @@ function MechanicDashboard() {
   }, []);
 
   const fetchRequests = async () => {
-
     try {
 
       const token = localStorage.getItem("token");
@@ -24,93 +24,49 @@ function MechanicDashboard() {
         }
       );
 
+      console.log("DATA:", res.data); // 👈 IMPORTANT DEBUG
+
       setRequests(res.data);
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-
   };
-
-  const acceptRequest = async (id) => {
-
-    try {
-
-      const token = localStorage.getItem("token");
-
-      await axios.put(
-        `http://localhost:5000/api/services/update/${id}`,
-        { status: "accepted" },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      alert("Request accepted");
-
-      fetchRequests();
-
-    } catch (error) {
-      console.log(error);
-    }
-
-  };
-  const completeRequest = async (id) => {
-
-  try {
-
-    const token = localStorage.getItem("token");
-
-    await axios.put(
-      `http://localhost:5000/api/services/update/${id}`,
-      { status: "completed" },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-
-    alert("Service completed");
-
-    fetchRequests();
-
-  } catch (error) {
-    console.log(error);
-  }
-
-};
 
   return (
-    <div>
+    <div className="p-6">
 
-      <h2>Mechanic Dashboard</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        Mechanic Dashboard (Live Requests)
+      </h2>
 
-      {requests.map((req) => (
+      <MapContainer
+        center={[26.8, 75.86]}
+        zoom={12}
+        style={{ height: "500px", width: "100%" }}
+      >
 
-        <div key={req._id} style={{border:"1px solid black", margin:"10px", padding:"10px"}}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-          <p>Service: {req.serviceType}</p>
-          <p>Vehicle: {req.vehicleType}</p>
-          <p>Location: {req.location}</p>
-          <p>Status: {req.status}</p>
+        {requests.map((req) => (
 
-          {req.status === "pending" && (
-            <button onClick={() => acceptRequest(req._id)}>
-              Accept Job
-            </button>
-          )}
-          {req.status === "accepted" && (
-  <button onClick={() => completeRequest(req._id)}>
-    Complete Job
-  </button>
-)}
+          req.lat && req.lng && (
 
-        </div>
+            <Marker key={req._id} position={[req.lat, req.lng]}>
+              <Popup>
+                <b>{req.serviceType}</b><br />
+                {req.vehicleType}<br />
+                {req.location}
+              </Popup>
+            </Marker>
 
-      ))}
+          )
+
+        ))}
+
+      </MapContainer>
 
     </div>
   );

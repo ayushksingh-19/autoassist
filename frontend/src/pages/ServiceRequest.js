@@ -28,11 +28,8 @@ function ServiceRequest() {
       });
 
     } else {
-
       alert("Geolocation not supported");
-
     }
-
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +50,9 @@ function ServiceRequest() {
         {
           serviceType,
           vehicleType,
-          location
+          location,
+          lat,   // ✅ ADDED
+          lng    // ✅ ADDED
         },
         {
           headers: {
