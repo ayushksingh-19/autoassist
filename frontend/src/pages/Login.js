@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function Login() {
-
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
 
     e.preventDefault();
@@ -18,7 +19,7 @@ function Login() {
       });
 
       localStorage.setItem("token", res.data.token);
-
+      navigate("/dashboard");
       alert("Login successful");
 
     } catch (error) {
@@ -30,34 +31,48 @@ function Login() {
   };
 
   return (
-    <div>
+  <div className="h-screen flex items-center justify-center bg-[var(--bright-snow)]">
 
-      <h2>Login</h2>
+    <form
+      onSubmit={handleLogin}
+      className="bg-white p-8 rounded shadow-md w-80 space-y-4"
+    >
+      <h2 className="text-xl font-bold text-center">Login</h2>
 
-      <form onSubmit={handleLogin}>
+      <input
+        type="email"
+        placeholder="Email"
+        className="border p-2 w-full"
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <input
+        type="password"
+        placeholder="Password"
+        className="border p-2 w-full"
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <br /><br />
+      <button
+        type="submit"
+        className="bg-[var(--smart-blue)] text-white w-full py-2 rounded"
+      >
+        Login
+      </button>
+      <p style={{ textAlign: "center", marginTop: "10px" }}>
+  Don't have an account?{" "}
+  <Link
+    to="/register"
+    style={{ color: "var(--smart-blue)", fontWeight: "bold" }}
+  >
+    Register
+  </Link>
+</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    </form>
 
-        <br /><br />
-
-        <button type="submit">Login</button>
-
-      </form>
-
-    </div>
-  );
+  </div>
+);
 }
 
 export default Login;

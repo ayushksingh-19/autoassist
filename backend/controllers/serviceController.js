@@ -28,24 +28,49 @@ exports.createRequest = async (req, res) => {
   }
 
 };
-
-// Get All Requests
-exports.getRequests = async (req, res) => {
-
+exports.acceptRequest = async (req, res) => {
   try {
 
-    const userId = req.user.id;
+    // 🔍 Find request by ID
+    const request = await ServiceRequest.findById(req.params.id);
 
-    const requests = await ServiceRequest.find({ userId });
+    if (!request) {
+      return res.status(404).json({ msg: "Request not found" });
+    }
+
+    // ✅ Update status
+    request.status = "accepted";
+
+    await request.save();
+
+    // 🔥 SOCKET.IO EMIT
+    const io = req.app.get("io");
+
+    io.emit("requestUpdated", request);
+
+    // ✅ Response
+    res.json({
+      msg: "Request accepted",
+      request
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+// Get All Requests
+exports.getRequests = async (req, res) => {
+  try {
+
+    const requests = await ServiceRequest.find({
+      userId: req.user.id   // ✅ FILTER USER
+    });
 
     res.json(requests);
 
   } catch (error) {
-
     res.status(500).json({ error: error.message });
-
   }
-
 };
 // Update request status
 exports.updateStatus = async (req, res) => {

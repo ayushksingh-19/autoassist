@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { io } from "socket.io-client";
 function MyRequests() {
 
   const [requests, setRequests] = useState([]);
+  useEffect(() => {
 
+  const socket = io("http://localhost:5000");
+
+  socket.on("requestUpdated", (updatedRequest) => {
+
+    setRequests((prev) =>
+      prev.map((req) =>
+        req._id === updatedRequest._id ? updatedRequest : req
+      )
+    );
+
+  });
+
+  return () => socket.disconnect();
+
+}, []);
   useEffect(() => {
     fetchRequests();
   }, []);
 
   const fetchRequests = async () => {
-
     try {
 
       const token = localStorage.getItem("token");
@@ -27,52 +42,80 @@ function MyRequests() {
       setRequests(res.data);
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-
   };
 
+  const activeRequests = requests.filter(
+    (r) => r.status !== "completed"
+  );
+
+  const completedRequests = requests.filter(
+    (r) => r.status === "completed"
+  );
+
   return (
-  <div>
+    <div style={{ backgroundColor: "var(--bright-snow)", minHeight: "100vh", padding: "20px" }}>
 
-    <h2>My Service Requests</h2>
+      <h2 style={{ fontSize: "26px", fontWeight: "bold", marginBottom: "20px" }}>
+        My Requests
+      </h2>
 
-    <h3>Active Requests</h3>
+      {/* ACTIVE */}
+      <h3 style={{ marginBottom: "10px" }}>Active Requests</h3>
 
-    {requests
-      .filter(req => req.status !== "completed")
-      .map((req) => (
+      {activeRequests.length === 0 ? (
+        <p>No active requests</p>
+      ) : (
+        activeRequests.map((req) => (
+          <div
+            key={req._id}
+            style={{
+              backgroundColor: "white",
+              padding: "15px",
+              borderRadius: "10px",
+              marginBottom: "10px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+            }}
+          >
+            <h4 style={{ color: "var(--smart-blue)" }}>{req.serviceType}</h4>
+            <p>{req.vehicleType}</p>
+            <p>{req.location}</p>
+            <p style={{ color: "orange", fontWeight: "bold" }}>{req.status}</p>
+          </div>
+        ))
+      )}
 
-        <div key={req._id} style={{border:"1px solid black", margin:"10px", padding:"10px"}}>
+      {/* COMPLETED */}
+      <h3 style={{ marginTop: "30px", marginBottom: "10px" }}>
+        Completed Requests
+      </h3>
 
-          <p>Service: {req.serviceType}</p>
-          <p>Vehicle: {req.vehicleType}</p>
-          <p>Location: {req.location}</p>
-          <p>Status: {req.status}</p>
+      {completedRequests.length === 0 ? (
+        <p>No completed requests</p>
+      ) : (
+        completedRequests.map((req) => (
+          <div
+            key={req._id}
+            style={{
+              backgroundColor: "#e6f7ff",
+              padding: "15px",
+              borderRadius: "10px",
+              marginBottom: "10px"
+            }}
+          >
+            <h4>{req.serviceType}</h4>
+            <p>{req.vehicleType}</p>
+            <p>{req.location}</p>
+            <p style={{ color: "green", fontWeight: "bold" }}>
+              {req.status}
+            </p>
+          </div>
+        ))
+      )}
 
-        </div>
-
-      ))}
-
-    <h3>Completed Services</h3>
-
-    {requests
-      .filter(req => req.status === "completed")
-      .map((req) => (
-
-        <div key={req._id} style={{border:"1px solid green", margin:"10px", padding:"10px"}}>
-
-          <p>Service: {req.serviceType}</p>
-          <p>Vehicle: {req.vehicleType}</p>
-          <p>Location: {req.location}</p>
-          <p>Status: {req.status}</p>
-
-        </div>
-
-      ))}
-
-  </div>
-);
+    </div>
+  );
 }
 
 export default MyRequests;

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -9,17 +9,25 @@ import MyRequests from "./pages/MyRequests";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-function App() {
+function Layout() {
+
+  const location = useLocation();
+
+  // ❌ Hide Navbar on login & register
+  const hideNavbar =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/";
 
   return (
-    <Router>
-
-      <Navbar />
+    <>
+      {!hideNavbar && <Navbar />}
 
       <Routes>
 
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/dashboard"
@@ -58,7 +66,14 @@ function App() {
         />
 
       </Routes>
+    </>
+  );
+}
 
+function App() {
+  return (
+    <Router>
+      <Layout />
     </Router>
   );
 }

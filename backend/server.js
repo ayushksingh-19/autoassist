@@ -1,25 +1,24 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
-const serviceRoutes = require("./routes/serviceRoutes");
-
 const app = express();
+const server = http.createServer(app);
 
-// connect database
-connectDB();
-
-app.use(cors());
-app.use(express.json());
-app.use("/api/auth", authRoutes);
-app.use("/api/services", serviceRoutes);
-
-app.get("/", (req, res) => {
-  res.send("AutoAssist API Running");
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }
 });
 
-const PORT = 5000;
+// 👇 make io accessible globally
+app.set("io", io);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+});
+
+server.listen(5000, () => {
+  console.log("Server running on port 5000");
 });

@@ -1,38 +1,43 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
 
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   return (
-    <div style={{ padding: "10px", background: "#eee" }}>
+    <div
+      style={{
+        backgroundColor: "var(--blue-slate)",
+        padding: "12px",
+        display: "flex",
+        gap: "20px",
+        color: "white",
+      }}
+    >
 
-      <Link to="/dashboard" style={{ marginRight: "10px" }}>Dashboard</Link>
+      <Link to="/dashboard" style={{ color: "white" }}>Dashboard</Link>
+      <Link to="/service" style={{ color: "white" }}>Request Service</Link>
+      <Link to="/myrequests" style={{ color: "white" }}>My Requests</Link>
+      <Link to="/mechanic" style={{ color: "white" }}>Mechanic</Link>
 
-      <Link to="/service" style={{ marginRight: "10px" }}>Request Service</Link>
-
-      <Link to="/myrequests" style={{ marginRight: "10px" }}>My Requests</Link>
-
-      <Link to="/mechanic" style={{ marginRight: "10px" }}>Mechanic</Link>
-
-      {!token && (
-        <>
-          <Link to="/login" style={{ marginRight: "10px" }}>Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      )}
-
-      {token && (
-        <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
-          Logout
-        </button>
-      )}
+      <button
+        onClick={logout}
+        style={{
+          marginLeft: "auto",
+          backgroundColor: "var(--smart-blue)",
+          color: "white",
+          border: "none",
+          padding: "5px 10px",
+          borderRadius: "5px",
+        }}
+      >
+        Logout
+      </button>
 
     </div>
   );

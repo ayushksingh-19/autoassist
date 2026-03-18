@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
 import MapComponent from "../components/MapComponent";
-
+import { useLocation } from "react-router-dom";
 function ServiceRequest() {
-
-  const [serviceType, setServiceType] = useState("");
+  const locationState = useLocation();
+  const [serviceType, setServiceType] = useState(
+  locationState.state?.serviceType || ""
+);
   const [vehicleType, setVehicleType] = useState("");
   const [location, setLocation] = useState("");
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
-
+  
   // Get user GPS location
   const getLocation = () => {
 
@@ -81,67 +83,66 @@ function ServiceRequest() {
 
   return (
 
-    <div className="p-10">
+    <div className="p-10 bg-bright-snow min-h-screen">
 
-      <h2 className="text-2xl font-bold mb-6">Request Service</h2>
+  <h2 className="text-2xl font-bold mb-6 text-blue-slate">
+    Request Service
+  </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+  <form onSubmit={handleSubmit} className="space-y-4">
 
-        <select
-          className="border p-2 w-full"
-          value={serviceType}
-          onChange={(e) => setServiceType(e.target.value)}
-        >
+    <select
+      className="border border-grey-olive p-2 w-full text-blue-slate"
+      value={serviceType}
+      onChange={(e) => setServiceType(e.target.value)}
+    >
+      <option value="">Select Service</option>
+      <option value="Mechanic">Mechanic</option>
+      <option value="EV Charging">EV Charging</option>
+      <option value="Fuel Delivery">Fuel Delivery</option>
+      <option value="Roadside Repair">Roadside Repair</option>
+    </select>
 
-          <option value="">Select Service</option>
-          <option value="Mechanic">Mechanic</option>
-          <option value="EV Charging">EV Charging</option>
-          <option value="Fuel Delivery">Fuel Delivery</option>
-          <option value="Roadside Repair">Roadside Repair</option>
+    <input
+      type="text"
+      placeholder="Vehicle Type"
+      className="border border-grey-olive p-2 w-full text-blue-slate"
+      value={vehicleType}
+      onChange={(e) => setVehicleType(e.target.value)}
+    />
 
-        </select>
+    <input
+      type="text"
+      placeholder="Location"
+      className="border border-grey-olive p-2 w-full text-blue-slate"
+      value={location}
+      onChange={(e) => setLocation(e.target.value)}
+    />
 
-        <input
-          type="text"
-          placeholder="Vehicle Type"
-          className="border p-2 w-full"
-          value={vehicleType}
-          onChange={(e) => setVehicleType(e.target.value)}
-        />
+    <button
+      type="button"
+      onClick={getLocation}
+      className="bg-grey-olive text-bright-snow px-4 py-2 rounded"
+    >
+      Use My Location
+    </button>
 
-        <input
-          type="text"
-          placeholder="Location"
-          className="border p-2 w-full"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
+    {lat && lng && (
+      <div className="mt-4 border border-grey-olive rounded overflow-hidden">
+        <MapComponent lat={lat} lng={lng} />
+      </div>
+    )}
 
-        <button
-          type="button"
-          onClick={getLocation}
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Use My Location
-        </button>
+    <button
+      type="submit"
+      className="bg-smart-blue text-bright-snow px-4 py-2 rounded hover:opacity-90"
+    >
+      Submit Request
+    </button>
 
-        {/* Map Display */}
-        {lat && lng && (
-          <div className="mt-4">
-            <MapComponent lat={lat} lng={lng} />
-          </div>
-        )}
+  </form>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Submit Request
-        </button>
-
-      </form>
-
-    </div>
+</div>
 
   );
 }

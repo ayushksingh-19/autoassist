@@ -1,3 +1,9 @@
+:root {
+  --blue-slate: #606771;
+  --grey-olive: #898B8E;
+  --bright-snow: #F8F8F9;
+  --smart-blue: #4268B3;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
