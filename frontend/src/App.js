@@ -12,7 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function Layout() {
 
   const location = useLocation();
-
+  
   // ❌ Hide Navbar on login & register
   const hideNavbar =
     location.pathname === "/login" ||
