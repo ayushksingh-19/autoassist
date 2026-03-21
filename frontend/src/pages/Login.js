@@ -48,7 +48,7 @@ if (res.data.role === "mechanic") {
       onSubmit={handleLogin}
       className="bg-white p-8 rounded shadow-md w-80 space-y-4"
     >
-      <h2 className="text-xl font-bold text-center">Login</h2>
+      <h2 className="text-xl font-bold text-center">AutoAssist</h2>
 
       <input
         type="email"

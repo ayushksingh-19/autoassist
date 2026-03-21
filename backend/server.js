@@ -3,15 +3,17 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
+// ✅ CREATE APP FIRST
+const app = express();
+const server = http.createServer(app);
+
+// ✅ IMPORT ROUTES AFTER APP
+const mechanicRoutes = require("./routes/mechanics");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const serviceRoutes = require("./routes/serviceRoutes");
 const authMiddleware = require("./middleware/auth");
 const roleMiddleware = require("./middleware/role");
-
-// ✅ CREATE APP FIRST
-const app = express();
-const server = http.createServer(app);
 
 // ✅ CONNECT DB
 connectDB();
@@ -19,7 +21,7 @@ connectDB();
 // ✅ MIDDLEWARES
 app.use(cors({
   origin: "http://localhost:3000",
-  methods: ["GET", "POST","PUT","DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
@@ -28,6 +30,7 @@ app.use(express.json());
 // ✅ ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/services", serviceRoutes);
+app.use("/api/mechanics", mechanicRoutes); // ✅ NOW CORRECT
 
 // ✅ PROTECTED ROUTES
 app.get("/api/user/dashboard", authMiddleware, roleMiddleware("user"), (req, res) => {

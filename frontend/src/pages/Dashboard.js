@@ -6,27 +6,56 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const services = [
-    {
-      title: "Mechanic Help",
-      desc: "Request roadside mechanic assistance",
-      route: "/service",
-    },
-    {
-      title: "EV Charging",
-      desc: "Get emergency EV charging service",
-      route: "/service",
-    },
-    {
-      title: "Fuel Delivery",
-      desc: "Order fuel to your location",
-      route: "/service",
-    },
-    {
-      title: "Roadside Repair",
-      desc: "Fix breakdown quickly",
-      route: "/service",
-    },
-  ];
+    
+  {
+    title: "Mechanic Help",
+    desc: "Request mechanic assistance",
+    action: () =>
+      navigate("/vehicle", { state: { serviceType: "Mechanic" } }),
+  },
+  {
+    title: "EV Charging",
+    desc: "Get emergency EV charging service",
+    action: () =>
+      navigate("/vehicle", { state: { serviceType: "EV Charging" } }),
+  },
+  {
+    title: "Fuel Delivery",
+    desc: "Order fuel to your location",
+    action: () =>
+      navigate("/fuel"),
+  },
+  {
+    title: "Roadside Repair",
+    desc: "Fix roadside breakdown quickly",
+    action: () =>
+      navigate("/vehicle", { state: { serviceType: "Roadside Repair" } }),
+  },
+  {
+  title: "Washing & Cleaning",
+  desc: "Get your vehicle cleaned at your location",
+  action: () =>
+    navigate("/service", { state: { serviceType: "Washing & Cleaning" } }),
+},
+{
+  title: "Tyre Services",
+  desc: "Puncture repair and tyre replacement",
+  action: () =>
+    navigate("/service", { state: { serviceType: "Tyre Services" } }),
+},
+{
+  title: "Detailing",
+  desc: "Premium car detailing and polishing",
+  action: () =>
+    navigate("/service", { state: { serviceType: "Detailing" } }),
+},
+{
+  title: "SOS Emergency",
+  desc: "Immediate help for accidents or emergencies or towing service",
+  action: () =>
+    navigate("/service", { state: { serviceType: "SOS Emergency" } }),
+},
+];
 
   return (
     <div
@@ -36,7 +65,7 @@ function Dashboard() {
 
       {/* Heading */}
       <h1 className="text-3xl font-bold text-center mb-8">
-        AutoAssist Dashboard
+        AutoAssist
       </h1>
 
       {/* Cards */}
@@ -45,7 +74,7 @@ function Dashboard() {
         {services.map((item, index) => (
           <div
             key={index}
-            onClick={() => navigate("/service", { state: { serviceType: item.title } })}
+            onClick={item.action}   // ✅ IMPORTANT FIX
             style={{
               backgroundColor: "white",
               borderRadius: "10px",
