@@ -48,20 +48,20 @@ function ServiceRequest() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:5000/api/services/create",
-        {
-          serviceType,
-          vehicleType,
-          location,
-          lat,   // ✅ ADDED
-          lng    // ✅ ADDED
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+  "http://localhost:5000/api/services/create",
+  {
+    serviceType,
+    vehicleType,
+    location,
+    lat,
+    lng
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
       alert("Service request created successfully");
 

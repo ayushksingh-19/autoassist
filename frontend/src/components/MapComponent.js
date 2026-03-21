@@ -1,37 +1,45 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
+// ✅ FORCE ICON (CDN METHOD)
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  iconUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-function MapComponent({ lat, lng }) {
-
-  if (!lat || !lng) return null;
+function MapComponent({ requests }) {
 
   return (
     <MapContainer
-      center={[lat, lng]}
-      zoom={13}
+      center={[26.8, 75.86]}
+      zoom={12}
       style={{ height: "400px", width: "100%" }}
     >
+
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
       />
 
-      <Marker position={[lat, lng]}>
-        <Popup>Your Location</Popup>
-      </Marker>
+      {requests && requests.map((req, index) => {
+
+  if (!req.lat || !req.lng) return null;
+
+  return (
+    <Marker key={index} position={[req.lat, req.lng]}>
+      <Popup>
+        🚗 {req.serviceType} <br />
+        🚙 {req.vehicleType}
+      </Popup>
+    </Marker>
+  );
+})}
 
     </MapContainer>
   );

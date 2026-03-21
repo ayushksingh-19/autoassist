@@ -8,27 +8,38 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const handleLogin = async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  // ✅ VALIDATION
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
 
-    try {
-
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/login",
+      {
         email,
-        password
-      });
+        password,
+      }
+    );
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-      alert("Login successful");
+    localStorage.setItem("token", res.data.token);
+localStorage.setItem("role", res.data.role);
 
-    } catch (error) {
+// 🔥 redirect based on role
+if (res.data.role === "mechanic") {
+  navigate("/mechanic");
+} else {
+  navigate("/dashboard");
+}
 
-      alert("Invalid credentials");
-
-    }
-
-  };
+  } catch (error) {
+    console.error(error.response?.data);
+    alert(error.response?.data?.message || "Invalid credentials");
+  }
+};
 
   return (
   <div className="h-screen flex items-center justify-center bg-[var(--bright-snow)]">

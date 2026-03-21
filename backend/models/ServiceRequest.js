@@ -13,19 +13,26 @@ const serviceRequestSchema = new mongoose.Schema({
     type: String
   },
   location: {
-    type: String
+    type: String,
+    lat: Number,
+    lng: Number,
   },
   status: {
-    type: String,
-    default: "pending"
-  },
+  type: String,
+  enum: ["pending", "accepted", "completed"],
+  default: "pending"
+},
   assignedMechanic: {
     type: String
   },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  mechanicId: {
+  type: String,
+  default: null
+},
 });
 
 module.exports = mongoose.model("ServiceRequest", serviceRequestSchema);
