@@ -2,18 +2,41 @@ const express = require("express");
 const router = express.Router();
 const Service = require("../models/ServiceRequest");
 const authMiddleware = require("../middleware/auth");
-// CREATE SERVICE
+
+// ✅ CREATE SERVICE
 router.post("/create", async (req, res) => {
   try {
 
-    const { serviceType, vehicleType, location } = req.body;
+    const {
+      serviceType,
+      vehicleType,
+      fuelType,
+      problem,
+      location,
+      lat,
+      lng,
+      price,
+      paymentMethod,
+      detailingType,
+      detailingService,
+      date,
+      timeSlot
+    } = req.body;
 
     const newRequest = new Service({
       serviceType,
       vehicleType,
+      fuelType,
+      problem,
       location,
       lat,
-      lng
+      lng,
+      price,
+      paymentMethod,
+      detailingType,
+      detailingService,
+      date,
+      timeSlot
     });
 
     await newRequest.save();
@@ -21,12 +44,14 @@ router.post("/create", async (req, res) => {
     res.status(201).json({ message: "Service request created" });
 
   } catch (error) {
-    res.status(500).json({ message: "Error creating request" });
+    console.error("CREATE ERROR:", error); // 🔥 important
+    res.status(500).json({ message: "Error creating request", error: error.message });
   }
 });
-// ACCEPT REQUEST
 
-router.put("/accept/:id", async (req, res) => {
+
+// ✅ ACCEPT REQUEST
+router.put("/accept/:id", authMiddleware, async (req, res) => {
   try {
 
     const request = await Service.findById(req.params.id);
@@ -36,22 +61,23 @@ router.put("/accept/:id", async (req, res) => {
     }
 
     request.status = "accepted";
-request.mechanicId = req.user.id; // 🔥 WHO ACCEPTED
+    request.mechanicId = req.user.id;
 
     await request.save();
 
-    // ✅ REAL-TIME UPDATE (IMPORTANT)
     const io = req.app.get("io");
     io.emit("requestUpdated", request);
 
     res.json({ message: "Request accepted", request });
 
   } catch (error) {
+    console.error("ACCEPT ERROR:", error);
     res.status(500).json({ message: "Error updating request" });
   }
 });
 
-// ✅ GET ALL REQUESTS
+
+// ✅ GET ALL REQUESTS (NEARBY)
 router.get("/all", authMiddleware, async (req, res) => {
   try {
 
@@ -69,16 +95,20 @@ router.get("/all", authMiddleware, async (req, res) => {
         Math.pow(s.lng - mechanicLng, 2)
       );
 
-      return distance < 0.1; // 🔥 adjust radius
+      return distance < 0.1;
     });
 
     res.json(nearby);
 
   } catch (error) {
+    console.error("FETCH ERROR:", error);
     res.status(500).json({ message: "Error fetching services" });
   }
 });
-router.put("/complete/:id", async (req, res) => {
+
+
+// ✅ COMPLETE REQUEST
+router.put("/complete/:id", authMiddleware, async (req, res) => {
   try {
 
     const request = await Service.findById(req.params.id);
@@ -91,14 +121,15 @@ router.put("/complete/:id", async (req, res) => {
 
     await request.save();
 
-    // 🔥 REAL-TIME UPDATE
     const io = req.app.get("io");
     io.emit("requestUpdated", request);
 
     res.json({ message: "Service completed", request });
 
   } catch (error) {
+    console.error("COMPLETE ERROR:", error);
     res.status(500).json({ message: "Error completing request" });
   }
 });
+
 module.exports = router;

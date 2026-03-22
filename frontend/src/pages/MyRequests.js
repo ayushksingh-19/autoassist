@@ -26,25 +26,29 @@ function MyRequests() {
   }, []);
 
   const fetchRequests = async () => {
-    try {
+  try {
+    const token = localStorage.getItem("token");
 
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(
-        "http://localhost:5000/api/services/all",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      setRequests(res.data);
-
-    } catch (error) {
-      console.error(error);
+    if (!token) {
+      alert("Please login again");
+      return;
     }
-  };
+
+    const res = await axios.get(
+      "http://localhost:5000/api/services/all",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setRequests(res.data);
+
+  } catch (error) {
+    console.error("FETCH ERROR:", error);
+  }
+};
 
   const activeRequests = requests.filter(
     (r) => r.status !== "completed"

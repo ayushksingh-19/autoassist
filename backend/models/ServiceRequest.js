@@ -5,34 +5,67 @@ const serviceRequestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
+
   serviceType: {
     type: String,
-    enum: ["Mechanic", "EV Charging", "Fuel Delivery", "Roadside Repair"]
+    enum: [
+      "Mechanic",
+      "EV Charging",
+      "Fuel Delivery",
+      "Roadside Repair",
+      "Washing & Cleaning",
+      "Tyre Services",
+      "Detailing",
+      "SOS Emergency"
+    ]
   },
+
   vehicleType: {
     type: String
   },
-  location: {
-    type: String,
-    lat: Number,
-    lng: Number,
+
+  fuelType: {
+    type: String
   },
+
+  problem: {
+    type: String
+  },
+
+  location: {
+    type: String
+  },
+
+  lat: Number,
+  lng: Number,
+
+  // ✅ NEW FIELDS
+  price: Number,
+  paymentMethod: String,
+  detailingType: String,
+  detailingService: String,
+  date: String,
+  timeSlot: String,
+
   status: {
-  type: String,
-  enum: ["pending", "accepted", "completed"],
-  default: "pending"
-},
+    type: String,
+    enum: ["pending", "accepted", "completed"],
+    default: "pending"
+  },
+
   assignedMechanic: {
     type: String
   },
+
+  mechanicId: {
+    type: String,
+    default: null
+  },
+
   createdAt: {
     type: Date,
     default: Date.now
-  },
-  mechanicId: {
-  type: String,
-  default: null
-},
+  }
 });
 
 module.exports = mongoose.model("ServiceRequest", serviceRequestSchema);

@@ -35,7 +35,7 @@ function Dashboard() {
   title: "Washing & Cleaning",
   desc: "Get your vehicle cleaned at your location",
   action: () =>
-    navigate("/service", { state: { serviceType: "Washing & Cleaning" } }),
+    navigate("/vehicle", { state: { serviceType: "Washing & Cleaning" } }),
 },
 {
   title: "Tyre Services",

@@ -32,7 +32,8 @@ function VehicleSelection() {
         Car
       </button>
 
-      {/* 🏍️ BIKE */}
+      {/* 🏍️ BIKE BUTTON (hide for Detailing) */}
+{location.state?.serviceType !== "Detailing" && (
       <button
         onClick={() =>
           navigate("/service", {
@@ -46,7 +47,7 @@ function VehicleSelection() {
       >
         Bike
       </button>
-
+)}
     </div>
   );
 }
