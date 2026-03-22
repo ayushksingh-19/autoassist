@@ -23,7 +23,91 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.nav-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
 
+.nav-btn:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.nav-btn.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+.profile-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.option-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+  background: #eef2ff;
+  transform: translateX(5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+.premium-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f9fafb, #eef2ff);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.clean-btn {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.clean-btn:hover {
+  background-color: #f9fafb;
+  transform: translateX(4px);
+  border-color: #d1d5db;
+}
+.premium-btn:hover {
+  transform: translateX(6px) scale(1.02);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+.profile-btn:hover {
+  background-color: #1e40af;
+  transform: scale(1.05);
+}
 .App-link {
   color: #61dafb;
 }

@@ -4,6 +4,18 @@
   --bright-snow: #F8F8F9;
   --smart-blue: #4268B3;
 }
+.input-box {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+.input-box:focus {
+  border-color: #3b82f6;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

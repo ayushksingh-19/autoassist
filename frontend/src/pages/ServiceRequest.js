@@ -23,6 +23,7 @@ function ServiceRequest() {
   const [date, setDate] = useState("");
   const [timeSlot, setTimeSlot] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+
   // 💰 PRICE LOGIC
   useEffect(() => {
     let priceMap = {
@@ -121,7 +122,19 @@ function ServiceRequest() {
       alert("Error creating request");
     }
   };
-
+const mechanicProblems = [
+  { name: "Engine Service", price: 1500 },
+  { name: "Oil & Filter Change", price: 800 },
+  { name: "Brake Issue", price: 1000 },
+  { name: "Battery Problem", price: 1200 },
+  { name: "Tire / Puncture", price: 300 },
+  { name: "Wheel Alignment", price: 600 },
+  { name: "Suspension Issue", price: 2000 },
+  { name: "AC Service", price: 1500 },
+  { name: "Electrical Issue", price: 1000 },
+  { name: "Fluid Leakage", price: 700 },
+  { name: "General Maintenance", price: 900 }
+];
   return (
     <div className="p-10 min-h-screen">
 
@@ -160,10 +173,60 @@ function ServiceRequest() {
           />
         )}
 
+        {/* 🔧 MECHANIC DROPDOWN */}
+{serviceType === "Mechanic" && (
+  <>
+    <select
+  className="border p-3 w-full rounded-xl"
+  value={problem}
+  onChange={(e) => {
+    const selected = mechanicProblems.find(
+      (item) => item.name === e.target.value
+    );
+    setProblem(e.target.value);
+
+    // optional: auto set price
+    if (selected) {
+      setPrice(selected.price);
+    }
+  }}
+>
+  <option value="">Select Issue</option>
+  {mechanicProblems.map((item, index) => (
+    <option key={index} value={item.name}>
+      {item.name} - ₹{item.price}
+    </option>
+  ))}
+</select>
+
+    <textarea
+      placeholder="Or describe your problem..."
+      className="border p-3 w-full rounded-xl"
+      value={problem}
+      onChange={(e) => setProblem(e.target.value)}
+    />
+  </>
+)}
+{serviceType === "Mechanic" && price > 0 && (
+  <div className="mt-3 p-3 bg-green-100 rounded">
+    <h3 className="font-bold text-green-700">
+      Estimated Price: ₹ {price}
+    </h3>
+  </div>
+)}
+{/* 🔧 OTHER SERVICES */}
+{["Roadside Repair", "Tyre Services", "SOS Emergency"].includes(serviceType) && (
+  <textarea
+    placeholder="Describe your problem..."
+    className="border p-3 w-full rounded-xl"
+    value={problem}
+    onChange={(e) => setProblem(e.target.value)}
+  />
+)}
+
         {/* DETAILING */}
         {serviceType === "Detailing" && (
           <div className="border p-4 rounded bg-gray-50">
-
             <h3 className="font-bold mb-3">Select Detailing Type</h3>
 
             <select
@@ -188,42 +251,15 @@ function ServiceRequest() {
                   onChange={(e) => setDetailingService(e.target.value)}
                 >
                   <option value="">Select Service</option>
-
                   {detailingType === "Exterior" && (
                     <>
                       <option>Deep Cleaning & Wash</option>
                       <option>Clay Bar Treatment</option>
                       <option>Paint Correction / Polishing</option>
-                      <option>Paint Protection (Wax/Seal)</option>
-                      <option>Ceramic / Graphene Coating</option>
-                      <option>Paint Protection Film (PPF)</option>
-                      <option>Headlight Restoration</option>
-                      <option>Alloy / Wheel Detailing</option>
-                      <option>Engine Bay Detailing</option>
-                    </>
-                  )}
-
-                  {detailingType === "Interior" && (
-                    <>
-                      <option>Deep Vacuuming</option>
-                      <option>Interior Steam Cleaning</option>
-                      <option>Leather Cleaning & Conditioning</option>
-                      <option>Dashboard & Console Cleaning</option>
-                      <option>Odor Elimination</option>
-                      <option>Glass & Mirror Cleaning</option>
-                    </>
-                  )}
-
-                  {detailingType === "Additional" && (
-                    <>
-                      <option>Car Denting / Minor Repairs</option>
-                      <option>Underbody Coating</option>
-                      <option>Windshield Anti-Glare Treatment</option>
                     </>
                   )}
                 </select>
 
-                {/* ✅ PRICE FIXED (OUTSIDE SELECT) */}
                 {price > 0 && (
                   <div className="mt-3 p-3 bg-green-100 rounded">
                     <h3 className="font-bold text-green-700">
@@ -233,55 +269,6 @@ function ServiceRequest() {
                 )}
               </>
             )}
-            {/* 💳 BILL + PAYMENT */}
-{serviceType === "Detailing" && price > 0 && (
-  <div className="border p-4 rounded bg-yellow-50 mt-4">
-
-    <h3 className="font-bold mb-3">Bill Summary</h3>
-
-    <p className="mb-2">Service: {detailingService}</p>
-    <p className="mb-2">Vehicle: {vehicleType || "N/A"}</p>
-    <p className="mb-2 font-bold">Total Amount: ₹ {price}</p>
-
-    {/* PAYMENT OPTIONS */}
-    <h4 className="font-semibold mt-4 mb-2">Select Payment Method</h4>
-
-    <div className="flex gap-3">
-
-      <button
-        type="button"
-        onClick={() => setPaymentMethod("Cash")}
-        className={`border px-4 py-2 rounded ${
-          paymentMethod === "Cash" ? "bg-blue-500 text-white" : ""
-        }`}
-      >
-        Cash
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setPaymentMethod("Card")}
-        className={`border px-4 py-2 rounded ${
-          paymentMethod === "Card" ? "bg-blue-500 text-white" : ""
-        }`}
-      >
-        Card
-      </button>
-
-      <button
-        type="button"
-        onClick={() => setPaymentMethod("UPI")}
-        className={`border px-4 py-2 rounded ${
-          paymentMethod === "UPI" ? "bg-blue-500 text-white" : ""
-        }`}
-      >
-        UPI
-      </button>
-
-    </div>
-
-  </div>
-)}
           </div>
         )}
 
@@ -302,14 +289,14 @@ function ServiceRequest() {
           Use My Location
         </button>
 
-        {lat && lng && (
-          <MapComponent lat={lat} lng={lng} />
-        )}
- 
+        {lat && lng && <MapComponent lat={lat} lng={lng} />}
+
+        {/* SUBMIT */}
         <button className="bg-blue-600 text-white px-4 py-2 rounded">
           Submit Request
         </button>
-         <button
+{/* 🔥 SMART NEARBY BUTTON */}
+<button
   type="button"
   onClick={() => {
     if (!lat || !lng) {

@@ -1,63 +1,48 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const role = localStorage.getItem("role");
-
-  // ❌ Hide navbar on login/register
-  if (location.pathname === "/login" || location.pathname === "/register") {
-    return null;
-  }
-
-  const logout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <div
-      style={{
-        backgroundColor: "var(--blue-slate)",
-        padding: "12px",
-        display: "flex",
-        gap: "20px",
-        color: "white",
-        alignItems: "center",
-      }}
-    >
-      {/* 👤 USER LINKS */}
-      {role === "user" && (
-        <>
-          <Link to="/dashboard" style={{ color: "white" }}>Dashboard</Link>
-          <Link to="/service" style={{ color: "white" }}>Request Service</Link>
-          <Link to="/myrequests" style={{ color: "white" }}>My Requests</Link>
-        </>
-      )}
+    <div className="w-full bg-white shadow-md px-8 py-4 flex justify-between items-center">
 
-      {/* 🔧 MECHANIC LINKS */}
-      {role === "mechanic" && (
-        <>
-          <Link to="/mechanic" style={{ color: "white" }}>Mechanic Dashboard</Link>
-        </>
-      )}
-
-      {/* 🚪 LOGOUT */}
-      <button
-        onClick={logout}
-        style={{
-          marginLeft: "auto",
-          backgroundColor: "var(--smart-blue)",
-          color: "white",
-          border: "none",
-          padding: "6px 12px",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
+      {/* 🔷 LOGO */}
+      <div
+        onClick={() => navigate("/dashboard")}
+        className="text-xl font-bold text-blue-600 cursor-pointer tracking-wide"
       >
-        Logout
-      </button>
+        AutoAssist
+      </div>
+
+      {/* 🔷 NAV BUTTONS */}
+      <div className="flex gap-4">
+
+        <button
+          onClick={() => navigate("/dashboard")}
+          className={`nav-btn ${isActive("/dashboard") ? "active" : ""}`}
+        >
+          Home
+        </button>
+
+        <button
+          onClick={() => navigate("/myrequests")}
+          className={`nav-btn ${isActive("/myrequests") ? "active" : ""}`}
+        >
+          My Bookings
+        </button>
+
+        <button
+          onClick={() => navigate("/profile")}
+          className="profile-btn"
+        >
+           Profile
+        </button>
+
+      </div>
     </div>
   );
 }

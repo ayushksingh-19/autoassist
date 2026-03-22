@@ -10,6 +10,9 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MapComponent from "./components/MapComponent";
 import FuelSelection from "./pages/FuelSelection";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
+import ChangePassword from "./pages/ChangePassword";
 
 
 function Layout() {
@@ -34,7 +37,9 @@ function Layout() {
         <Route path="/map" element={<MapComponent />} />
         <Route path="/vehicle" element={<VehicleSelection />} />
         <Route path="/fuel" element={<FuelSelection />} />
-        
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route
           path="/dashboard"
           element={

@@ -27,7 +27,7 @@ function Login() {
 
     localStorage.setItem("token", res.data.token);
 localStorage.setItem("role", res.data.role);
-
+localStorage.setItem("user", JSON.stringify(res.data.user));
 // 🔥 redirect based on role
 if (res.data.role === "mechanic") {
   navigate("/mechanic");
