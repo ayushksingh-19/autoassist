@@ -46,7 +46,16 @@ const serviceRequestSchema = new mongoose.Schema({
   detailingService: String,
   date: String,
   timeSlot: String,
-
+  problem: String,
+fuelType: String,
+date: String,
+timeSlot: String,
+detailingType: String,
+detailingService: String,
+price: Number,
+paymentMethod: String,
+lat: Number,
+lng: Number,
   status: {
     type: String,
     enum: ["pending", "accepted", "completed"],

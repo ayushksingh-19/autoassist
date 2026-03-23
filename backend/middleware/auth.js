@@ -10,11 +10,12 @@ module.exports = (req, res, next) => {
 
     const token = authHeader.replace("Bearer ", "");
 
-    const decoded = jwt.verify(token, "secretkey"); // ⚠️ same key as login
+    const decoded = jwt.verify(token, "secretkey");
 
     req.user = decoded;
 
     next();
+
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
   }

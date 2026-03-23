@@ -73,7 +73,13 @@ function ServiceRequest() {
       });
     }
   };
+const token = localStorage.getItem("token");
 
+if (!token) {
+  alert("Login first");
+  navigate("/login");
+  return;
+}
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -271,7 +277,51 @@ const mechanicProblems = [
             )}
           </div>
         )}
+{/* 🗓️ SCHEDULE SECTION */}
+{["Mechanic", "Washing & Cleaning", "Tyre Services", "Detailing"].includes(serviceType) && (
+  <div className="border p-4 rounded bg-gray-50">
 
+    <h3 className="font-bold mb-3">Schedule</h3>
+
+    {/* DATE */}
+    <label className="block mb-1">Select Date</label>
+    <input
+      type="date"
+      className="border p-2 w-full mb-3"
+      value={date}
+      onChange={(e) => setDate(e.target.value)}
+    />
+
+    {/* TIME SLOTS */}
+    <label className="block mb-2">Select Time Slot</label>
+
+    <div className="grid grid-cols-2 gap-3">
+
+      {[
+        "9:00 AM - 11:00 AM",
+        "11:00 AM - 1:00 PM",
+        "1:00 PM - 3:00 PM",
+        "3:00 PM - 5:00 PM",
+        "5:00 PM - 7:00 PM"
+      ].map((slot) => (
+        <button
+          type="button"
+          key={slot}
+          onClick={() => setTimeSlot(slot)}
+          className={`border p-3 rounded text-sm ${
+            timeSlot === slot
+              ? "bg-blue-600 text-white"
+              : "bg-white"
+          }`}
+        >
+          {slot}
+        </button>
+      ))}
+
+    </div>
+
+  </div>
+)}
         {/* LOCATION */}
         <input
           type="text"

@@ -1,55 +1,57 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
+
 function MyRequests() {
 
   const [requests, setRequests] = useState([]);
+
+  // 🔥 SOCKET REAL-TIME UPDATE
   useEffect(() => {
+    const socket = io("http://localhost:5000");
 
-  const socket = io("http://localhost:5000");
+    socket.on("requestUpdated", (updatedRequest) => {
+      setRequests((prev) =>
+        prev.map((req) =>
+          req._id === updatedRequest._id ? updatedRequest : req
+        )
+      );
+    });
 
-  socket.on("requestUpdated", (updatedRequest) => {
+    return () => socket.disconnect();
+  }, []);
 
-    setRequests((prev) =>
-      prev.map((req) =>
-        req._id === updatedRequest._id ? updatedRequest : req
-      )
-    );
+  // 🔥 FETCH USER REQUESTS
+  const fetchRequests = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-  });
+      if (!token) {
+        alert("Please login again");
+        return;
+      }
 
-  return () => socket.disconnect();
+      const res = await axios.get(
+        "http://localhost:5000/api/services/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-}, []);
+      setRequests(res.data);
+
+    } catch (error) {
+      console.error("FETCH ERROR:", error);
+    }
+  };
+
   useEffect(() => {
     fetchRequests();
   }, []);
 
-  const fetchRequests = async () => {
-  try {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Please login again");
-      return;
-    }
-
-    const res = await axios.get(
-      "http://localhost:5000/api/services/all",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    setRequests(res.data);
-
-  } catch (error) {
-    console.error("FETCH ERROR:", error);
-  }
-};
-
+  // FILTERS
   const activeRequests = requests.filter(
     (r) => r.status !== "completed"
   );
@@ -58,10 +60,21 @@ function MyRequests() {
     (r) => r.status === "completed"
   );
 
-  return (
-    <div style={{ backgroundColor: "var(--bright-snow)", minHeight: "100vh", padding: "20px" }}>
+  // 🎨 STATUS COLOR FUNCTION
+  const getStatusStyle = (status) => {
+    if (status === "pending") {
+      return { background: "#fff3cd", color: "#856404" };
+    } else if (status === "accepted") {
+      return { background: "#d1ecf1", color: "#0c5460" };
+    } else {
+      return { background: "#d4edda", color: "#155724" };
+    }
+  };
 
-      <h2 style={{ fontSize: "26px", fontWeight: "bold", marginBottom: "20px" }}>
+  return (
+    <div style={{ padding: "25px", background: "#f5f7fb", minHeight: "100vh" }}>
+
+      <h2 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "20px" }}>
         My Requests
       </h2>
 
@@ -75,17 +88,104 @@ function MyRequests() {
           <div
             key={req._id}
             style={{
-              backgroundColor: "white",
-              padding: "15px",
-              borderRadius: "10px",
-              marginBottom: "10px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+              background: "white",
+              padding: "18px",
+              borderRadius: "12px",
+              marginBottom: "15px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
             }}
           >
-            <h4 style={{ color: "var(--smart-blue)" }}>{req.serviceType}</h4>
-            <p>{req.vehicleType}</p>
-            <p>{req.location}</p>
-            <p style={{ color: "orange", fontWeight: "bold" }}>{req.status}</p>
+            <h3>{req.serviceType}</h3>
+
+            <p style={{ color: "#555" }}>
+              🚗 {req.vehicleType || "N/A"}
+            </p>
+
+            <p style={{ fontSize: "13px", color: "#777" }}>
+              📍 {req.location?.split(",")[0]}
+            </p>
+
+            {/* STATUS */}
+            <span
+              style={{
+                display: "inline-block",
+                marginTop: "8px",
+                padding: "5px 10px",
+                borderRadius: "20px",
+                fontWeight: "bold",
+                ...getStatusStyle(req.status)
+              }}
+            >
+              {req.status}
+            </span>
+
+            {/* ACTION BUTTONS */}
+            <div style={{ marginTop: "12px", display: "flex", gap: "10px" }}>
+
+              {/* TRACK */}
+              <button
+                onClick={() => {
+                  if (!req.lat || !req.lng) {
+                    alert("Location not available");
+                    return;
+                  }
+
+                  window.open(
+  `https://www.google.com/maps/search/?api=1&query=${req.lat},${req.lng}`,
+  "_blank"
+);
+                }}
+                style={{
+                  background: "#172431ca",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  cursor: "pointer"
+                }}
+              >
+                 Track
+              </button>
+
+              {/* CANCEL */}
+              {req.status === "pending" && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const token = localStorage.getItem("token");
+
+                      await axios.delete(
+                        `http://localhost:5000/api/services/${req._id}`,
+                        {
+                          headers: {
+                            Authorization: `Bearer ${token}`,
+                          },
+                        }
+                      );
+
+                      setRequests((prev) =>
+                        prev.filter((r) => r._id !== req._id)
+                      );
+
+                    } catch (error) {
+                      console.error(error);
+                      alert("Cancel failed");
+                    }
+                  }}
+                  style={{
+                    background: "#41181c87",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    cursor: "pointer"
+                  }}
+                >
+                   Cancel
+                </button>
+              )}
+
+            </div>
           </div>
         ))
       )}
@@ -102,18 +202,19 @@ function MyRequests() {
           <div
             key={req._id}
             style={{
-              backgroundColor: "#e6f7ff",
-              padding: "15px",
-              borderRadius: "10px",
-              marginBottom: "10px"
+              background: "#e6f7ff",
+              padding: "18px",
+              borderRadius: "12px",
+              marginBottom: "15px"
             }}
           >
-            <h4>{req.serviceType}</h4>
-            <p>{req.vehicleType}</p>
-            <p>{req.location}</p>
-            <p style={{ color: "green", fontWeight: "bold" }}>
+            <h3>{req.serviceType}</h3>
+            <p>🚗 {req.vehicleType}</p>
+            <p>📍 {req.location?.split(",")[0]}</p>
+
+            <span style={{ color: "green", fontWeight: "bold" }}>
               {req.status}
-            </p>
+            </span>
           </div>
         ))
       )}
