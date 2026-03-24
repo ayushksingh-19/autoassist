@@ -141,6 +141,38 @@ const mechanicProblems = [
   { name: "Fluid Leakage", price: 700 },
   { name: "General Maintenance", price: 900 }
 ];
+const bikeServices = {
+  core: [
+    "Engine Oil Change",
+    "Air Filter Cleaning/Replacement",
+    "Fuel Line Check",
+    "Brake Inspection & Repair",
+    "Chain Cleaning & Lubrication",
+    "Battery & Electrical Check",
+    "Tyre Pressure & Wheel Check",
+    "Cable Lubrication (Clutch/Throttle)",
+    "General Cleaning & Inspection"
+  ],
+  repair: [
+    "Suspension Check",
+    "Carburetor Cleaning",
+    "Fuel Injection Tuning",
+    "Engine Overhaul",
+    "Brake Drum Adjustment",
+    "Accelerator Cable Fix",
+    "Self Motor Check"
+  ]
+};
+const tyreServices = [
+  { name: "Puncture Repair", price: 300 },
+  { name: "Tyre Replacement", price: 2500 },
+  { name: "Wheel Balancing", price: 500 },
+  { name: "Wheel Alignment", price: 800 },
+  { name: "Tyre Rotation", price: 400 },
+  { name: "Nitrogen Filling", price: 200 },
+  { name: "Routine Safety Check", price: 300 },
+  { name: "Doorstep Tyre Repair", price: 600 }
+];
   return (
     <div className="p-10 min-h-screen">
 
@@ -180,7 +212,7 @@ const mechanicProblems = [
         )}
 
         {/* 🔧 MECHANIC DROPDOWN */}
-{serviceType === "Mechanic" && (
+{serviceType === "Mechanic" && !vehicleType?.toLowerCase().includes("bike") && (
   <>
     <select
   className="border p-3 w-full rounded-xl"
@@ -197,6 +229,39 @@ const mechanicProblems = [
     }
   }}
 >
+  {/* 🏍️ BIKE DROPDOWN (SAFE ADD — NO CHANGE TO CAR) */}
+{serviceType === "Mechanic" &&
+  vehicleType?.toLowerCase().includes("bike") && (
+    <select
+      className="border p-3 w-full rounded-xl mt-2"
+      value={problem}
+      onChange={(e) => setProblem(e.target.value)}
+    >
+      <option value="">Select Bike Service</option>
+
+      <optgroup label="Core Services">
+        <option>Engine Oil Change</option>
+        <option>Air Filter Cleaning/Replacement</option>
+        <option>Fuel Line Check</option>
+        <option>Brake Inspection & Repair</option>
+        <option>Chain Cleaning & Lubrication</option>
+        <option>Battery & Electrical Check</option>
+        <option>Tyre Pressure & Wheel Check</option>
+        <option>Cable Lubrication</option>
+        <option>General Cleaning & Inspection</option>
+      </optgroup>
+
+      <optgroup label="Repair Services">
+        <option>Suspension Check</option>
+        <option>Carburetor Cleaning</option>
+        <option>Fuel Injection Tuning</option>
+        <option>Engine Overhaul</option>
+        <option>Brake Drum Adjustment</option>
+        <option>Accelerator Cable Fix</option>
+        <option>Self Motor Check</option>
+      </optgroup>
+    </select>
+)}
   <option value="">Select Issue</option>
   {mechanicProblems.map((item, index) => (
     <option key={index} value={item.name}>
@@ -220,14 +285,40 @@ const mechanicProblems = [
     </h3>
   </div>
 )}
-{/* 🔧 OTHER SERVICES */}
-{["Roadside Repair", "Tyre Services", "SOS Emergency"].includes(serviceType) && (
-  <textarea
-    placeholder="Describe your problem..."
-    className="border p-3 w-full rounded-xl"
-    value={problem}
-    onChange={(e) => setProblem(e.target.value)}
-  />
+{/* 🔧 TYRE SERVICES DROPDOWN */}
+{serviceType === "Tyre Services" && (
+  <>
+    <select
+      className="border p-3 w-full rounded-xl"
+      value={problem}
+      onChange={(e) => {
+        const selected = tyreServices.find(
+          (item) => item.name === e.target.value
+        );
+        setProblem(e.target.value);
+
+        if (selected) {
+          setPrice(selected.price);
+        }
+      }}
+    >
+      <option value="">Select Tyre Service</option>
+
+      {tyreServices.map((item, index) => (
+        <option key={index} value={item.name}>
+          {item.name} - ₹{item.price}
+        </option>
+      ))}
+    </select>
+
+    {/* OPTIONAL TEXTAREA */}
+    <textarea
+      placeholder="Describe issue (optional)"
+      className="border p-3 w-full rounded-xl"
+      value={problem}
+      onChange={(e) => setProblem(e.target.value)}
+    />
+  </>
 )}
 
         {/* DETAILING */}
