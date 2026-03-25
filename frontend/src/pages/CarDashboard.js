@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function CarDashboard() {
 
   const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ function Dashboard() {
 
       {/* Heading */}
       <h1 className="text-3xl font-bold text-center mb-8">
-        AutoAssist
+        CAR-AutoAssist
       </h1>
 
       {/* Cards */}
@@ -120,4 +120,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default CarDashboard;

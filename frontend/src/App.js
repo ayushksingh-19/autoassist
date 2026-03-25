@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import VehicleSelection from "./pages/VehicleSelection";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/CarDashboard";
 import ServiceRequest from "./pages/ServiceRequest";
 import MechanicDashboard from "./pages/MechanicDashboard";
 import MyRequests from "./pages/MyRequests";
@@ -13,8 +13,9 @@ import FuelSelection from "./pages/FuelSelection";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import ChangePassword from "./pages/ChangePassword";
-
-
+import BikeDashboard from "./pages/BikeDashboard";
+import CarDashboard from "./pages/CarDashboard";
+import HomeDashboard from "./pages/HomeDashboard";
 function Layout() {
 
   const location = useLocation();
@@ -40,6 +41,9 @@ function Layout() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/bike-dashboard" element={<BikeDashboard />} />
+        <Route path="/dashboard" element={<CarDashboard />} />
+        <Route path="/home" element={<HomeDashboard />} />
         <Route
           path="/dashboard"
           element={
