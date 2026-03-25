@@ -1,130 +1,95 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function BikeDashboard() {
+  const navigate = useNavigate();
+
+  const handleClick = (type) => {
+    navigate("/service", {
+      state: {
+        serviceType: type,
+        vehicleType: "bike",
+      },
+    });
+  };
+
   const services = [
     {
       title: "Mobile Mechanic",
       desc: "Expert bike mechanics at your location",
       color: "#f97316",
       tag: "Popular",
+      type: "mechanic",
     },
     {
       title: "Tire & Tube Service",
       desc: "Puncture repair & tire replacement",
       color: "#090b0a",
       tag: "",
+      type: "tyre",
     },
     {
       title: "Roadside Repair",
       desc: "Fix breakdown issues instantly",
       color: "#08ea1b",
       tag: "Fast",
+      type: "roadside",
     },
     {
       title: "Fuel Delivery",
       desc: "Emergency fuel delivery service",
       color: "#44deef",
       tag: "",
+      type: "fuel",
     },
-    
     {
       title: "Washing & Cleaning",
-      desc:"Get your vehicle cleaned at your location",
+      desc: "Get your vehicle cleaned at your location",
       color: "#5586f7",
       tag: "",
+      type: "washing",
     },
     {
       title: "Vehicle Health Check-Up",
       desc: "Complete bike inspection service",
       color: "#d77de1",
       tag: "Fast",
+      type: "health",
     },
     {
       title: "Engine Jobs",
       desc: "Engine repair & servicing",
       color: "#3f4740a3",
       tag: "Fast",
+      type: "engine",
     },
     {
       title: "Detailing Service",
       desc: "Premium bike polishing & detailing",
       color: "#6a08ea",
       tag: "Fast",
+      type: "detailing",
     },
     {
       title: "SOS Emergency",
-      desc:  "Immediate roadside help",
+      desc: "Immediate roadside help",
       color: "#d40633",
       tag: "",
+      type: "sos",
     },
   ];
 
   return (
     <div style={{ padding: "30px", background: "#f8fafc", minHeight: "100vh" }}>
       
-      {/* HEADER */}
-      <h2 style={{ marginBottom: "5px" }}>Bike Services</h2>
+      <h2 style={{ color: "#2563eb", fontSize: "24px", fontWeight: "bold" }}>
+        Bike Services
+      </h2>
+
       <p style={{ color: "#64748b", marginBottom: "25px" }}>
         Select the service you need for your bike
       </p>
-      <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "20px",
-    marginBottom: "25px",
-  }}
->
-  {/* BIKE OFFER */}
-  <div
-    style={{
-      background: "linear-gradient(90deg, #1630f9, #ef4444)",
-      color: "#fff",
-      padding: "20px",
-      borderRadius: "16px",
-    }}
-  >
-    <h3 style={{ margin: 0 }}>🎁 Bike Special - 25% Off</h3>
-    <p style={{ margin: "8px 0" }}>
-      Get 25% discount on chain and brake services
-    </p>
-    <span
-      style={{
-        background: "rgba(255,255,255,0.2)",
-        padding: "5px 10px",
-        borderRadius: "8px",
-        fontSize: "12px",
-      }}
-    >
-      BIKE25
-    </span>
-  </div>
 
-  {/* SAFETY CHECK */}
-  <div
-    style={{
-      background: "linear-gradient(90deg, #1630f9, #14b8a6)",
-      color: "#fff",
-      padding: "20px",
-      borderRadius: "16px",
-    }}
-  >
-    <h3 style={{ margin: 0 }}>🎁 Free Safety Check</h3>
-    <p style={{ margin: "8px 0" }}>
-      Book any service and get free bike safety inspection
-    </p>
-    <span
-      style={{
-        background: "rgba(255,255,255,0.2)",
-        padding: "5px 10px",
-        borderRadius: "8px",
-        fontSize: "12px",
-      }}
-    >
-      SAFETY
-    </span>
-  </div>
-</div>
       {/* GRID */}
       <div
         style={{
@@ -136,6 +101,7 @@ function BikeDashboard() {
         {services.map((s, i) => (
           <div
             key={i}
+            onClick={() => handleClick(s.type)}
             style={{
               background: "#fff",
               borderRadius: "16px",
@@ -144,9 +110,19 @@ function BikeDashboard() {
               boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
               position: "relative",
               cursor: "pointer",
+              transition: "all 0.25s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-6px)";
+              e.currentTarget.style.boxShadow =
+                "0 10px 25px rgba(0,0,0,0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(0,0,0,0.05)";
             }}
           >
-            {/* ICON */}
             <div
               style={{
                 width: "45px",
@@ -164,7 +140,6 @@ function BikeDashboard() {
               🔧
             </div>
 
-            {/* TAG */}
             {s.tag && (
               <span
                 style={{
@@ -194,32 +169,8 @@ function BikeDashboard() {
           </div>
         ))}
       </div>
-
-      {/* BOTTOM STATS */}
-      <div
-        style={{
-          marginTop: "30px",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "20px",
-        }}
-      >
-        <div style={statBox}>24/7<br/><span>Available Service</span></div>
-        <div style={statBox}>300+<br/><span>Verified Mechanics</span></div>
-        <div style={statBox}>10 min<br/><span>Avg. Response Time</span></div>
-      </div>
     </div>
   );
 }
-
-const statBox = {
-  background: "#fff",
-  padding: "20px",
-  borderRadius: "14px",
-  textAlign: "center",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-  fontSize: "20px",
-  fontWeight: "bold",
-};
 
 export default BikeDashboard;

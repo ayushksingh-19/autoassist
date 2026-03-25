@@ -16,6 +16,14 @@ import ChangePassword from "./pages/ChangePassword";
 import BikeDashboard from "./pages/BikeDashboard";
 import CarDashboard from "./pages/CarDashboard";
 import HomeDashboard from "./pages/HomeDashboard";
+import ServicePage from "./pages/ServicePage";
+import "leaflet/dist/leaflet.css";
+import MapPage from "./pages/MapPage";
+import ActiveRequests from "./pages/ActiveRequests";
+
+
+
+
 function Layout() {
 
   const location = useLocation();
@@ -44,6 +52,12 @@ function Layout() {
         <Route path="/bike-dashboard" element={<BikeDashboard />} />
         <Route path="/dashboard" element={<CarDashboard />} />
         <Route path="/home" element={<HomeDashboard />} />
+        <Route path="/service" element={<ServicePage />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/active" element={<ActiveRequests />} />
+
+
+        
         <Route
           path="/dashboard"
           element={
