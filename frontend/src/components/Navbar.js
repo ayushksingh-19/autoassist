@@ -1,55 +1,129 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="w-full bg-white shadow-md px-8 py-4 flex justify-between items-center">
+    <div style={navContainer}>
+      
+      {/* LEFT */}
+      <div style={left}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
+          onClick={() => navigate("/home")}
+        >
+         
 
-      {/* 🔷 LOGO */}
-      <div
-        onClick={() => navigate("/home")}
-        className="text-xl font-bold text-blue-600 cursor-pointer tracking-wide"
-      >
-        AutoAssist
+          <div>
+            <h3 style={logoText}>AutoAssist</h3>
+          </div>
+        </div>
+      </div> {/* ✅ FIX: properly closed LEFT */}
+
+      {/* CENTER */}
+      <div style={center}>
+        <button style={activeBtn} onClick={() => navigate("/active")}>
+          Active Requests
+        </button>
+
+        <button style={navBtn}>Wallet</button>
+        <button style={navBtn}>Profile</button>
       </div>
 
-      {/* 🔷 NAV BUTTONS */}
-      <div className="flex gap-4">
-         <button onClick={() => navigate("/dashboard")}>
-         Car
-      </button>
-        <button onClick={() => navigate("/bike-dashboard", { state: { vehicleType: "bike" } })}>
-         Bike
-      </button>
-        <button
-          onClick={() => navigate("/dashboard")}
-          className={`nav-btn ${isActive("/dashboard") ? "active" : ""}`}
-        >
-          Home
-        </button>
+      {/* RIGHT */}
+      <div style={right}>
+        <span style={notification}>3</span>
 
-        <button
-          onClick={() => navigate("/myrequests")}
-          className={`nav-btn ${isActive("/myrequests") ? "active" : ""}`}
-        >
-          My Bookings
-        </button>
+        <button style={switchBtn}>Switch Vehicle</button>
 
-        <button
-          onClick={() => navigate("/profile")}
-          className="profile-btn"
-        >
-           Profile
-        </button>
-
+        <button style={logoutBtn}>↗</button>
       </div>
     </div>
   );
 }
+
+const navContainer = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "12px 25px",
+  background: "#fff",
+  borderBottom: "1px solid #e5e7eb",
+};
+
+const left = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+};
+
+const logoBox = {
+  width: "40px",
+  height: "40px",
+  background: "#2563eb",
+  borderRadius: "10px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#fff",
+  fontSize: "18px",
+};
+
+const logoText = {
+  margin: 0,
+  fontSize: "18px",
+};
+
+const center = {
+  display: "flex",
+  gap: "15px",
+};
+
+const navBtn = {
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  color: "#374151",
+};
+
+const activeBtn = {
+  background: "#111827",
+  color: "#fff",
+  border: "none",
+  padding: "6px 12px",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const right = {
+  display: "flex",
+  alignItems: "center",
+  gap: "15px",
+};
+
+const notification = {
+  background: "#111827",
+  color: "#fff",
+  borderRadius: "50%",
+  padding: "4px 8px",
+  fontSize: "12px",
+};
+
+const switchBtn = {
+  border: "1px solid #e5e7eb",
+  padding: "6px 12px",
+  borderRadius: "8px",
+  background: "#fff",
+  cursor: "pointer",
+};
+
+const logoutBtn = {
+  border: "none",
+  background: "#f3f4f6",
+  padding: "6px 10px",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
 
 export default Navbar;

@@ -5,13 +5,17 @@ function BikeDashboard() {
   const navigate = useNavigate();
 
   const handleClick = (type) => {
+  if (type === "tyre") {
+    navigate("/tyre-service"); // ✅ OPEN TYRE PAGE
+  } else {
     navigate("/service", {
       state: {
         serviceType: type,
         vehicleType: "bike",
       },
     });
-  };
+  }
+};
 
   const services = [
     {
