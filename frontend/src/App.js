@@ -20,7 +20,7 @@ import MapPage from "./pages/MapPage";
 import ActiveRequests from "./pages/ActiveRequests";
 import TyreServicePage from "./pages/TyreServicePage";
 import "leaflet/dist/leaflet.css";
-
+import Wallet from "./pages/Wallet";
 
 // 🔥 Layout FIXED
 function Layout({ children }) {
@@ -51,7 +51,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+  <Route path="/wallet" element={<Wallet />} />
           {/* HOME */}
           <Route path="/home" element={<HomeDashboard />} />
 

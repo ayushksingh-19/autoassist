@@ -1,8 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🔥 LOGOUT FUNCTION
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  // 🔥 ACTIVE BUTTON LOGIC
+  const isActive = (path) =>
+    location.pathname === path ? activeBtn : navBtn;
 
   return (
     <div style={navContainer}>
@@ -13,31 +24,55 @@ function Navbar() {
           style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
           onClick={() => navigate("/home")}
         >
-         
-
           <div>
-            <h3 style={logoText}>AutoAssist</h3>
+            {/* 🔵 BLUE + BOLD */}
+            <h3 style={{ ...logoText, color: "#2563eb", fontWeight: "bold",fontSize:"25px" }}>
+              AutoAssist
+            </h3>
           </div>
         </div>
-      </div> {/* ✅ FIX: properly closed LEFT */}
+      </div>
 
       {/* CENTER */}
       <div style={center}>
-        <button style={activeBtn} onClick={() => navigate("/active")}>
+        <button
+          style={isActive("/active")}
+          onClick={() => navigate("/active")}
+        >
           Active Requests
         </button>
 
-        <button style={navBtn}>Wallet</button>
-        <button style={navBtn}>Profile</button>
+        <button
+          style={isActive("/wallet")}
+          onClick={() => navigate("/wallet")}
+        >
+          Wallet
+        </button>
+
+        <button
+          style={isActive("/profile")}
+          onClick={() => navigate("/profile")}
+        >
+          Profile
+        </button>
       </div>
 
       {/* RIGHT */}
       <div style={right}>
         <span style={notification}>3</span>
 
-        <button style={switchBtn}>Switch Vehicle</button>
+        {/* 🔥 SWITCH VEHICLE → HOME */}
+        <button
+          style={switchBtn}
+          onClick={() => navigate("/home")}
+        >
+          Switch Vehicle
+        </button>
 
-        <button style={logoutBtn}>↗</button>
+        {/* 🔥 LOGOUT */}
+        <button style={logoutBtn} onClick={logout}>
+          ↗
+        </button>
       </div>
     </div>
   );
@@ -56,18 +91,6 @@ const left = {
   display: "flex",
   alignItems: "center",
   gap: "10px",
-};
-
-const logoBox = {
-  width: "40px",
-  height: "40px",
-  background: "#2563eb",
-  borderRadius: "10px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "#fff",
-  fontSize: "18px",
 };
 
 const logoText = {
