@@ -1,26 +1,26 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
-import VehicleSelection from "./pages/VehicleSelection";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import ServiceRequest from "./pages/ServiceRequest";
+import VehicleSelectionV2 from "./pages/VehicleSelectionV2";
+import RegisterScreen from "./pages/RegisterScreen";
+import LoginScreen from "./pages/LoginScreen";
+import ServiceRequestV2 from "./pages/ServiceRequestV2";
 import MechanicDashboard from "./pages/MechanicDashboard";
-import MyRequests from "./pages/MyRequests";
-import Navbar from "./components/Navbar";
+import MyRequestsV2 from "./pages/MyRequestsV2";
+import AppNavbar from "./components/AppNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FuelSelection from "./pages/FuelSelection";
-import Profile from "./pages/Profile";
-import EditProfile from "./pages/EditProfile";
+import ProfileV2 from "./pages/ProfileV2";
+import EditProfileV2 from "./pages/EditProfileV2";
 import ChangePassword from "./pages/ChangePassword";
-import BikeDashboard from "./pages/BikeDashboard";
-import CarDashboard from "./pages/CarDashboard";
-import HomeDashboard from "./pages/HomeDashboard";
-import ServicePage from "./pages/ServicePage";
+import BikeDashboardV2 from "./pages/BikeDashboardV2";
+import CarDashboardV2 from "./pages/CarDashboardV2";
+import HomeDashboardV2 from "./pages/HomeDashboardV2";
+import ServicePageV2 from "./pages/ServicePageV2";
 import MapPage from "./pages/MapPage";
-import ActiveRequests from "./pages/ActiveRequests";
+import ActiveRequestsV2 from "./pages/ActiveRequestsV2";
 import TyreServicePage from "./pages/TyreServicePage";
 import "leaflet/dist/leaflet.css";
-import Wallet from "./pages/Wallet";
+import WalletV2 from "./pages/WalletV2";
 
 // 🔥 Layout FIXED
 function Layout({ children }) {
@@ -32,10 +32,10 @@ function Layout({ children }) {
     location.pathname === "/";
 
   return (
-    <>
-      {!hideNavbar && <Navbar />}
+    <div className="app-shell">
+      {!hideNavbar && <AppNavbar />}
       {children}
-    </>
+    </div>
   );
 }
 
@@ -48,38 +48,38 @@ function App() {
         <Routes>
 
           {/* AUTH */}
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-  <Route path="/wallet" element={<Wallet />} />
+          <Route path="/" element={<LoginScreen />} />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/register" element={<RegisterScreen />} />
+  <Route path="/wallet" element={<WalletV2 />} />
           {/* HOME */}
-          <Route path="/home" element={<HomeDashboard />} />
+          <Route path="/home" element={<HomeDashboardV2 />} />
 
           {/* DASHBOARDS */}
-          <Route path="/dashboard" element={<CarDashboard />} />
-          <Route path="/bike-dashboard" element={<BikeDashboard />} />
+          <Route path="/dashboard" element={<CarDashboardV2 />} />
+          <Route path="/bike-dashboard" element={<BikeDashboardV2 />} />
 
           {/* SERVICES */}
-          <Route path="/service" element={<ServicePage />} />
+          <Route path="/service" element={<ServicePageV2 />} />
           <Route path="/tyre-service" element={<TyreServicePage />} />
 
           {/* MAP */}
           <Route path="/map" element={<MapPage />} />
 
           {/* USER */}
-          <Route path="/vehicle" element={<VehicleSelection />} />
+          <Route path="/vehicle" element={<VehicleSelectionV2 />} />
           <Route path="/fuel" element={<FuelSelection />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/profile" element={<ProfileV2 />} />
+          <Route path="/edit-profile" element={<EditProfileV2 />} />
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/active" element={<ActiveRequests />} />
+          <Route path="/active" element={<ActiveRequestsV2 />} />
 
           {/* PROTECTED */}
           <Route
             path="/service-request"
             element={
               <ProtectedRoute>
-                <ServiceRequest />
+                <ServiceRequestV2 />
               </ProtectedRoute>
             }
           />
@@ -97,7 +97,7 @@ function App() {
             path="/myrequests"
             element={
               <ProtectedRoute>
-                <MyRequests />
+                <MyRequestsV2 />
               </ProtectedRoute>
             }
           />

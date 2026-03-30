@@ -23,7 +23,9 @@ function FuelSelection() {
           navigate("/service", {
             state: {
               serviceType: "Fuel Delivery",
-              fuelType: "Petrol"
+              serviceLabel: "Fuel Delivery",
+              fuelType: "Petrol",
+              vehicleType: "Car",
             }
           })
         }
@@ -38,7 +40,9 @@ function FuelSelection() {
           navigate("/service", {
             state: {
               serviceType: "Fuel Delivery",
-              fuelType: "Diesel"
+              serviceLabel: "Fuel Delivery",
+              fuelType: "Diesel",
+              vehicleType: "Car",
             }
           })
         }
