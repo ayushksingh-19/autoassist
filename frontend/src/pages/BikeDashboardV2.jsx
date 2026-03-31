@@ -7,24 +7,35 @@ const bikeServices = [
     desc: "Send a bike mechanic directly to your location.",
     path: "/service",
     state: { serviceType: "Mechanic", serviceLabel: "Mobile Mechanic", vehicleType: "Bike" },
+    tag: "Fast dispatch",
   },
   {
     title: "Tyre & Tube Service",
     desc: "Book puncture repair or replacement support.",
     path: "/service",
     state: { serviceType: "Tyre Services", serviceLabel: "Tyre & Tube Service", vehicleType: "Bike" },
+    tag: "Quick fix",
   },
   {
     title: "Roadside Repair",
     desc: "Handle urgent breakdown issues on the spot.",
     path: "/service",
     state: { serviceType: "Roadside Repair", serviceLabel: "Roadside Repair", vehicleType: "Bike" },
+    tag: "On-site",
   },
   {
     title: "Fuel Delivery",
     desc: "Request emergency fuel delivery for your bike.",
+    path: "/fuel",
+    state: { vehicleType: "Bike" },
+    tag: "Popular",
+  },
+  {
+    title: "EV Charging",
+    desc: "Get emergency EV charging support for your bike.",
     path: "/service",
-    state: { serviceType: "Fuel Delivery", serviceLabel: "Fuel Delivery", vehicleType: "Bike" },
+    state: { serviceType: "EV Charging", serviceLabel: "EV Charging", vehicleType: "Bike" },
+    tag: "EV ready",
   },
   {
     title: "Battery Service",
@@ -36,6 +47,7 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Battery Service requested for jump start, charging issue, or replacement check.",
     },
+    tag: "Quick start",
   },
   {
     title: "Chain & Brake Repair",
@@ -47,12 +59,14 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Chain & Brake Repair requested for bike chain adjustment or brake issue.",
     },
+    tag: "Safety",
   },
   {
     title: "Washing & Cleaning",
     desc: "Book doorstep cleaning with a smoother premium UI flow.",
     path: "/service",
     state: { serviceType: "Washing & Cleaning", serviceLabel: "Washing & Cleaning", vehicleType: "Bike" },
+    tag: "Detail care",
   },
   {
     title: "Vehicle Health Check-Up",
@@ -64,6 +78,7 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Vehicle Health Check-Up requested for preventive inspection and diagnosis.",
     },
+    tag: "Preventive",
   },
   {
     title: "Engine Jobs",
@@ -75,6 +90,7 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Engine Jobs requested for bike engine repair or servicing.",
     },
+    tag: "Workshop",
   },
   {
     title: "Suspension Check",
@@ -86,6 +102,7 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Suspension Check requested for fork, shock absorber, or ride comfort issues.",
     },
+    tag: "Ride quality",
   },
   {
     title: "Clutch & Gear Support",
@@ -97,12 +114,14 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Clutch & Gear Support requested for shifting or clutch-related issues.",
     },
+    tag: "Transmission",
   },
   {
     title: "Detailing",
     desc: "Choose a polishing and care package before dispatch.",
     path: "/service",
     state: { serviceType: "Detailing", serviceLabel: "Detailing", vehicleType: "Bike" },
+    tag: "Premium",
   },
   {
     title: "Pickup & Workshop Drop",
@@ -114,12 +133,14 @@ const bikeServices = [
       vehicleType: "Bike",
       presetProblem: "Pickup & Workshop Drop requested for transport to a workshop.",
     },
+    tag: "Recovery",
   },
   {
     title: "SOS Emergency",
     desc: "Escalate high-priority support when the situation is urgent.",
     path: "/service",
     state: { serviceType: "SOS Emergency", serviceLabel: "SOS Emergency", vehicleType: "Bike" },
+    tag: "Priority",
   },
 ];
 
@@ -165,7 +186,7 @@ function BikeDashboardV2() {
             <p className="feature-copy">{item.desc}</p>
             <div className="feature-meta">
               <span>Continue</span>
-              <span className="feature-tag">Bike ready</span>
+              <span className="feature-tag">{item.tag}</span>
             </div>
           </article>
         ))}

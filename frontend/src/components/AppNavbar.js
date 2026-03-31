@@ -4,6 +4,10 @@ import BrandLogo from "./BrandLogo";
 
 const navItems = [
   { label: "Home", path: "/home" },
+  {
+    label: "Vehicle Health",
+    path: "/vehicle-health",
+  },
   { label: "Live Requests", path: "/active" },
   { label: "My Requests", path: "/myrequests" },
   { label: "Wallet", path: "/wallet" },
@@ -73,7 +77,7 @@ function AppNavbar() {
               <button
                 key={item.path}
                 type="button"
-                onClick={() => navigate(item.path)}
+                onClick={() => navigate(item.path, item.state ? { state: item.state } : undefined)}
                 style={{
                   border: "1px solid",
                   borderColor: isActive(item.path)

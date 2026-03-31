@@ -149,6 +149,24 @@ const detectLocation = () => {
           </button>
         </div>
 
+        <div
+          style={{
+            background: "#f8fafc",
+            border: "1px solid #e5e7eb",
+            borderRadius: "12px",
+            padding: "14px 16px",
+            marginBottom: "18px",
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: "600" }}>Nearby help</p>
+          <p style={{ ...subText, marginTop: "6px", marginBottom: "8px" }}>
+            Open nearby tyre repair and replacement shops in Google Maps.
+          </p>
+          <p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
+            Google Maps: tyre mechanic near me
+          </p>
+        </div>
+
         {/* PACKAGES */}
         <h3 style={sectionTitle}>Choose Service Package</h3>
         <div style={packageWrap}>

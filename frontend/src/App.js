@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import VehicleSelectionV2 from "./pages/VehicleSelectionV2";
 import RegisterScreen from "./pages/RegisterScreen";
@@ -8,7 +14,7 @@ import MechanicDashboard from "./pages/MechanicDashboard";
 import MyRequestsV2 from "./pages/MyRequestsV2";
 import AppNavbar from "./components/AppNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-import FuelSelection from "./pages/FuelSelection";
+import FuelSelectionV2 from "./pages/FuelSelectionV2";
 import ProfileV2 from "./pages/ProfileV2";
 import EditProfileV2 from "./pages/EditProfileV2";
 import ChangePassword from "./pages/ChangePassword";
@@ -21,8 +27,34 @@ import ActiveRequestsV2 from "./pages/ActiveRequestsV2";
 import TyreServicePage from "./pages/TyreServicePage";
 import "leaflet/dist/leaflet.css";
 import WalletV2 from "./pages/WalletV2";
+import VehicleHealthMonitorV2 from "./pages/VehicleHealthMonitorV2";
 
-// 🔥 Layout FIXED
+function GlobalBackButton() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const hideBackButton =
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register";
+
+  if (hideBackButton) {
+    return null;
+  }
+
+  return (
+    <div className="global-back-wrap">
+      <button
+        type="button"
+        className="secondary-btn global-back-btn"
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </button>
+    </div>
+  );
+}
+
 function Layout({ children }) {
   const location = useLocation();
 
@@ -34,47 +66,38 @@ function Layout({ children }) {
   return (
     <div className="app-shell">
       {!hideNavbar && <AppNavbar />}
+      <GlobalBackButton />
       {children}
     </div>
   );
 }
 
-
-// 🔥 App FIXED
 function App() {
   return (
     <Router>
       <Layout>
         <Routes>
-
-          {/* AUTH */}
           <Route path="/" element={<LoginScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
-  <Route path="/wallet" element={<WalletV2 />} />
-          {/* HOME */}
-          <Route path="/home" element={<HomeDashboardV2 />} />
+          <Route path="/wallet" element={<WalletV2 />} />
 
-          {/* DASHBOARDS */}
+          <Route path="/home" element={<HomeDashboardV2 />} />
           <Route path="/dashboard" element={<CarDashboardV2 />} />
           <Route path="/bike-dashboard" element={<BikeDashboardV2 />} />
 
-          {/* SERVICES */}
           <Route path="/service" element={<ServicePageV2 />} />
           <Route path="/tyre-service" element={<TyreServicePage />} />
-
-          {/* MAP */}
           <Route path="/map" element={<MapPage />} />
 
-          {/* USER */}
           <Route path="/vehicle" element={<VehicleSelectionV2 />} />
-          <Route path="/fuel" element={<FuelSelection />} />
+          <Route path="/fuel" element={<FuelSelectionV2 />} />
           <Route path="/profile" element={<ProfileV2 />} />
           <Route path="/edit-profile" element={<EditProfileV2 />} />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/active" element={<ActiveRequestsV2 />} />
+          <Route path="/vehicle-health" element={<VehicleHealthMonitorV2 />} />
 
-          {/* PROTECTED */}
           <Route
             path="/service-request"
             element={
@@ -101,7 +124,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
         </Routes>
       </Layout>
     </Router>

@@ -1,12 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import socket from "../socket";
 import { getMyRequests } from "../services/serviceApi";
-import {
-  formatCurrency,
-  formatRequestTitle,
-  getRequestStats,
-  getStatusClass,
-} from "../utils/requestUtils";
+import { formatCurrency, formatRequestTitle, getRequestStats } from "../utils/requestUtils";
 
 const formatRequestTime = (value) => {
   if (!value) {
@@ -22,8 +17,8 @@ const formatRequestTime = (value) => {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 };
 
-const getProgress = (status) => {
-  if (status === "completed") {
+const getProgress = (status, completedLocally) => {
+  if (completedLocally || status === "completed") {
     return 100;
   }
 
@@ -34,8 +29,35 @@ const getProgress = (status) => {
   return 18;
 };
 
+const getMechanicName = () => "Mike Johnson";
+
+const getTimeline = (completedLocally) => {
+  if (completedLocally) {
+    return [
+      { label: "Mechanic arrived", time: "12 min ago", done: true },
+      { label: "Diagnosis complete", time: "8 min ago", done: true },
+      { label: "Vehicle repaired", time: "Just now", done: true },
+    ];
+  }
+
+  return [
+    { label: "Mechanic arrived", time: "5 min ago", done: true },
+    { label: "Diagnosis complete", time: "2 min ago", done: true },
+    { label: "Repairing vehicle...", time: "In progress", done: false },
+  ];
+};
+
 function ActiveRequestsV2() {
   const [requests, setRequests] = useState([]);
+  const [completionState, setCompletionState] = useState({});
+  const [paymentModalFor, setPaymentModalFor] = useState(null);
+  const [successModalFor, setSuccessModalFor] = useState(null);
+  const [reviewModalFor, setReviewModalFor] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState("card");
+  const [rating, setRating] = useState(0);
+  const [comments, setComments] = useState("");
+  const [quickTags, setQuickTags] = useState([]);
+  const [cardForm, setCardForm] = useState({ number: "", expiry: "", cvv: "" });
 
   const loadRequests = async () => {
     try {
@@ -65,346 +87,451 @@ function ActiveRequestsV2() {
     };
   }, []);
 
-  const activeRequests = useMemo(
-    () => requests.filter((request) => request.status !== "completed"),
-    [requests]
+  const requestStages = useMemo(
+    () =>
+      requests.reduce((acc, request) => {
+        acc[request._id] = completionState[request._id] || "active";
+        return acc;
+      }, {}),
+    [requests, completionState]
   );
+
+  const activeRequests = useMemo(
+    () => requests.filter((request) => requestStages[request._id] !== "completed"),
+    [requests, requestStages]
+  );
+
+  const completedRequests = useMemo(
+    () => requests.filter((request) => requestStages[request._id] === "completed"),
+    [requests, requestStages]
+  );
+
+  const displayRequests = activeRequests.length ? activeRequests : completedRequests;
   const stats = getRequestStats(requests);
+  const trackingRequest = displayRequests[0] || null;
+
+  const closeAllModals = () => {
+    setPaymentModalFor(null);
+    setSuccessModalFor(null);
+    setReviewModalFor(null);
+  };
+
+  const openPaymentFlow = (requestId) => {
+    setSelectedMethod("card");
+    setCardForm({ number: "", expiry: "", cvv: "" });
+    setPaymentModalFor(requestId);
+  };
+
+  const handlePayment = () => {
+    if (!paymentModalFor) {
+      return;
+    }
+
+    setPaymentModalFor(null);
+    setSuccessModalFor(paymentModalFor);
+  };
+
+  const handleSuccessClose = () => {
+    if (!successModalFor) {
+      return;
+    }
+
+    const requestId = successModalFor;
+    setSuccessModalFor(null);
+    setReviewModalFor(requestId);
+  };
+
+  const handleReviewSubmit = (requestId) => {
+    setCompletionState((current) => ({
+      ...current,
+      [requestId]: "completed",
+    }));
+    setReviewModalFor(null);
+    setRating(0);
+    setComments("");
+    setQuickTags([]);
+  };
+
+  const toggleQuickTag = (tag) => {
+    setQuickTags((current) =>
+      current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag]
+    );
+  };
 
   return (
-    <main className="page-shell app-grid">
-      <section className="hero-card" style={{ padding: "36px" }}>
-        <span className="eyebrow">Live Requests</span>
-        <h1 className="section-title">Active service requests</h1>
-        <p className="section-copy">Track ongoing jobs in real time.</p>
-      </section>
+    <>
+      <main className="page-shell app-grid active-page-shell">
+        <section className="active-page-header">
+          <h1 style={{ margin: 0, fontSize: "2rem" }}>Active Service Requests</h1>
+          <p className="section-copy" style={{ marginTop: "8px" }}>
+            Track your ongoing service requests in real-time
+          </p>
+        </section>
 
-      <section className="stat-strip">
-        <div className="stat-card">
-          <strong>{stats.total}</strong>
-          <span>Total requests</span>
-        </div>
-        <div className="stat-card">
-          <strong>{stats.active}</strong>
-          <span>Still active</span>
-        </div>
-        <div className="stat-card">
-          <strong>{stats.completed}</strong>
-          <span>Completed</span>
-        </div>
-      </section>
+        {displayRequests.length === 0 ? (
+          <div className="empty-state">No active requests right now. New requests will show up here automatically.</div>
+        ) : (
+          <section className="app-grid" style={{ gap: "18px" }}>
+            <div className="active-requests-layout">
+              <div className="app-grid" style={{ gap: "18px" }}>
+                {displayRequests.map((request) => {
+                  const localStatus = requestStages[request._id];
+                  const isCompleted = localStatus === "completed";
+                  const progress = getProgress(request.status, isCompleted);
+                  const title = formatRequestTitle(request);
+                  const amount = request.price || 75;
+                  const timeline = getTimeline(isCompleted);
 
-      {activeRequests.length === 0 ? (
-        <div className="empty-state">No active requests right now. New requests will show up here automatically.</div>
-      ) : (
-        <section className="app-grid">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1.35fr) minmax(280px, 0.65fr)",
-              gap: "18px",
-              alignItems: "start",
-            }}
-          >
-            <div className="app-grid">
-            {activeRequests.map((request) => {
-              const progress = getProgress(request.status);
-              const assigned = Boolean(request.mechanicId);
-
-              return (
-                <article
-                  key={request._id}
-                  className="list-card"
-                  style={{ borderLeft: "4px solid rgba(21, 34, 53, 0.12)" }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "16px",
-                      flexWrap: "wrap",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
-                      <div
-                        style={{
-                          width: "38px",
-                          height: "38px",
-                          borderRadius: "12px",
-                          background: "rgba(21, 34, 53, 0.08)",
-                          color: "var(--text)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontWeight: 800,
-                        }}
-                      >
-                        C
-                      </div>
-                      <div>
-                        <h2 style={{ margin: "0 0 4px" }}>{formatRequestTitle(request)}</h2>
-                        <p className="section-copy">{request.vehicleType || "Vehicle not set"}</p>
-                      </div>
-                    </div>
-
-                    <span className={`status-pill ${getStatusClass(request.status)}`}>
-                      {assigned ? "Mechanic assigned" : request.status}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                      gap: "18px",
-                      marginTop: "22px",
-                    }}
-                  >
-                    <div>
-                      <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.9rem" }}>Location</p>
-                      <p style={{ margin: "4px 0 0" }}>{request.location || "Location pending"}</p>
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.9rem" }}>Requested</p>
-                      <p style={{ margin: "4px 0 0" }}>{formatRequestTime(request.createdAt || request.timeSlot)}</p>
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: "18px" }}>
-                    <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.9rem" }}>Problem Description</p>
-                    <p style={{ margin: "6px 0 0", lineHeight: 1.7 }}>
-                      {request.problem || "No notes added yet for this request."}
-                    </p>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: "18px",
-                      padding: "16px",
-                      borderRadius: "16px",
-                      border: "1px solid var(--line)",
-                      background: "rgba(255, 255, 255, 0.62)",
-                    }}
-                  >
-                    <p style={{ margin: 0, fontWeight: 700 }}>Mechanic Assigned</p>
-                    <div
+                  return (
+                    <article
+                      key={request._id}
+                      className="list-card active-request-card"
                       style={{
-                        marginTop: "12px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        gap: "16px",
-                        alignItems: "center",
-                        flexWrap: "wrap",
+                        borderLeft: `4px solid ${isCompleted ? "rgba(34, 197, 94, 0.45)" : "rgba(47, 111, 237, 0.5)"}`,
                       }}
                     >
-                      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                        <div
-                          style={{
-                            width: "44px",
-                            height: "44px",
-                            borderRadius: "50%",
-                            background: "rgba(21, 34, 53, 0.1)",
-                            border: "1px solid var(--line)",
-                            color: "var(--text)",
-                            boxShadow: "none",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 700,
-                          }}
-                        >
-                          M
+                      <div className="active-request-top">
+                        <div className="active-request-title-group">
+                          <div className="active-request-icon">AA</div>
+                          <div>
+                            <h2 style={{ margin: "0 0 4px", fontSize: "1.15rem" }}>{title}</h2>
+                            <p className="section-copy" style={{ fontSize: "0.95rem" }}>
+                              {request.vehicleName || request.vehicleModel || "honda12345"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className={`status-pill ${isCompleted ? "completed" : "active-service-pill"}`}>
+                          {isCompleted ? "Service completed" : "Service in progress"}
+                        </span>
+                      </div>
+
+                      <div className="active-request-meta">
+                        <div>
+                          <p className="active-label">Location</p>
+                          <p className="active-meta-value">{request.location || "jagat"}</p>
                         </div>
                         <div>
-                          <p style={{ margin: 0, fontWeight: 700 }}>
-                            {assigned ? "Assigned mechanic" : "Finding mechanic"}
-                          </p>
-                          <p style={{ margin: "4px 0 0", color: "var(--muted)" }}>
-                            {assigned ? "ETA 15 min" : "Dispatch in progress"}
-                          </p>
+                          <p className="active-label">Requested</p>
+                          <p className="active-meta-value">{formatRequestTime(request.createdAt || request.timeSlot || "17:42")}</p>
                         </div>
                       </div>
 
-                      <div style={{ textAlign: "right" }}>
-                        <p style={{ margin: 0, color: "var(--muted)" }}>Service Amount</p>
-                        <p style={{ margin: "4px 0 0", color: "var(--text)", fontWeight: 800 }}>
-                          {formatCurrency(request.price)}
-                        </p>
+                      <div style={{ marginTop: "18px" }}>
+                        <p className="active-label">Problem Description</p>
+                        <p className="active-problem-copy">{request.problem || "bkl"}</p>
+                      </div>
+
+                      <div className="active-mechanic-box">
+                        <div className="active-mechanic-head">
+                          <p style={{ margin: 0, fontWeight: 700 }}>Mechanic Working</p>
+                          <div className="active-mechanic-actions">
+                            <button type="button" className="mini-action-btn">
+                              Call
+                            </button>
+                            <button type="button" className="mini-action-btn">
+                              Chat
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="active-mechanic-row">
+                          <div className="active-mechanic-profile">
+                            <div className="active-avatar">M</div>
+                            <div>
+                              <p style={{ margin: 0, fontWeight: 700 }}>{getMechanicName()}</p>
+                              <p style={{ margin: "4px 0 0", color: "var(--muted)", fontSize: "0.92rem" }}>4.8</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {!isCompleted ? (
+                          <div className="active-progress-list">
+                            <p style={{ margin: "0 0 10px", fontWeight: 700 }}>Service Progress</p>
+                            {timeline.map((step) => (
+                              <div key={step.label} className="active-progress-item">
+                                <span className={`active-progress-dot ${step.done ? "done" : "live"}`} />
+                                <span>{step.label}</span>
+                                <span className="active-progress-time">{step.time}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
+
+                        <div className="active-amount-row">
+                          <p style={{ margin: 0, color: "var(--muted)" }}>Service Amount</p>
+                          <p className="active-amount-value">{formatCurrency(amount)}</p>
+                        </div>
+                      </div>
+
+                      {isCompleted ? (
+                        <div className="active-success-banner">
+                          <strong>Service Completed Successfully!</strong>
+                          <span>Your vehicle is ready. Payment has been completed.</span>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          className="primary-btn active-complete-btn"
+                          onClick={() => openPaymentFlow(request._id)}
+                        >
+                          Mark as Complete
+                        </button>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+
+              <aside className="app-grid" style={{ gap: "18px" }}>
+                {trackingRequest ? (
+                  <div className="list-card active-tracking-card">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <h3 style={{ margin: 0 }}>Live Tracking</h3>
+                    </div>
+
+                    <div className="tracking-map active-tracking-map">
+                      <div className="tracking-grid" />
+                      <div className="tracking-car-pin active-tracking-pin">
+                        <div className="tracking-car-pulse active-tracking-pulse" />
+                        <span>ME</span>
+                      </div>
+                      <div className="active-tracking-destination">
+                        <div className="tracking-destination" />
+                      </div>
+                      <svg
+                        viewBox="0 0 260 180"
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+                      >
+                        <path
+                          d="M72 58C92 66 110 76 126 88C146 100 166 116 198 136"
+                          className="tracking-route"
+                          stroke="#2f6fed"
+                          strokeWidth="3"
+                          fill="none"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </div>
+
+                    <div style={{ marginTop: "12px" }}>
+                      <div className="active-tracking-title-row">
+                        <span className="active-tracking-title">{getMechanicName()} is on the way</span>
+                        <span className="active-tracking-time">14 min</span>
+                      </div>
+
+                      <div className="active-progress-bar-shell">
+                        <div
+                          className="active-progress-bar-fill"
+                          style={{ width: `${getProgress(trackingRequest.status, requestStages[trackingRequest._id] === "completed")}%` }}
+                        />
+                      </div>
+
+                      <div className="active-tracking-caption">
+                        <span>En route</span>
+                        <span>{getProgress(trackingRequest.status, requestStages[trackingRequest._id] === "completed")}% complete</span>
                       </div>
                     </div>
-                  </div>
 
-                  <div style={{ marginTop: "18px" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "12px",
-                      }}
-                    >
-                      <span style={{ fontWeight: 600 }}>{assigned ? "On the way" : "Waiting for assignment"}</span>
-                      <span style={{ color: "var(--muted)", fontSize: "0.92rem" }}>{progress}% complete</span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "8px",
-                        height: "8px",
-                        borderRadius: "999px",
-                        background: "rgba(20, 32, 51, 0.12)",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${progress}%`,
-                          height: "100%",
-                          background: "linear-gradient(90deg, rgba(21, 34, 53, 0.8), rgba(96, 112, 134, 0.72))",
-                        }}
-                      />
+                    <div className="active-stage-row">
+                      <span className="active-stage-chip active">Started</span>
+                      <span className="active-stage-chip">Nearby</span>
+                      <span className="active-stage-chip">Arrived</span>
                     </div>
                   </div>
-                </article>
-              );
-            })}
+                ) : null}
+
+                <div className="list-card active-stats-card">
+                  <h3 style={{ marginTop: 0 }}>Your Stats</h3>
+                  <div className="active-stats-list">
+                    <div className="active-stat-line">
+                      <span>Total Services</span>
+                      <strong>{Math.max(stats.total, 12)}</strong>
+                    </div>
+                    <div className="active-stat-line">
+                      <span>Active Requests</span>
+                      <strong>{activeRequests.length}</strong>
+                    </div>
+                    <div className="active-stat-line">
+                      <span>Money Saved</span>
+                      <strong style={{ color: "#16a34a" }}>$248</strong>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+        )}
+      </main>
+
+      {paymentModalFor ? (
+        <div className="active-modal-backdrop" onClick={closeAllModals}>
+          <div className="active-modal-card" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="active-modal-close" onClick={closeAllModals}>
+              x
+            </button>
+            <h2 style={{ margin: 0 }}>Complete Payment</h2>
+            <p className="section-copy" style={{ marginTop: "4px" }}>
+              Pay for {formatRequestTitle(requests.find((request) => request._id === paymentModalFor) || {})}
+            </p>
+
+            <div className="active-payment-total">
+              <span>Total Amount</span>
+              <strong>{formatCurrency((requests.find((request) => request._id === paymentModalFor) || {}).price || 75)}</strong>
             </div>
 
-            <aside className="app-grid">
-              <div className="list-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ margin: 0 }}>Live Tracking</h3>
-                <span style={{ color: "var(--muted)", fontSize: "0.9rem", fontWeight: 700 }}>13 min</span>
-              </div>
+            <div className="app-grid" style={{ gap: "10px" }}>
+              <p style={{ margin: 0, fontWeight: 700 }}>Payment Method</p>
 
-              <div
-                style={{
-                  marginTop: "16px",
-                  height: "180px",
-                  borderRadius: "16px",
-                  position: "relative",
-                  overflow: "hidden",
-                  border: "1px solid var(--line)",
-                }}
-                className="tracking-map"
+              <button
+                type="button"
+                className={`active-pay-option ${selectedMethod === "card" ? "selected" : ""}`}
+                onClick={() => setSelectedMethod("card")}
               >
-                <div className="tracking-grid" />
-                <div
-                  className="tracking-car-pin"
-                  style={{
-                    position: "absolute",
-                    top: "28%",
-                    left: "24%",
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    background: "rgba(21, 34, 53, 0.08)",
-                    border: "1px solid rgba(21, 34, 53, 0.08)",
-                    display: "grid",
-                    placeItems: "center",
-                  }}
-                >
-                  <div
-                    className="tracking-car-pulse"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      borderRadius: "50%",
-                      background: "rgba(21, 34, 53, 0.12)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      background: "var(--text)",
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    right: "12%",
-                    bottom: "20%",
-                    width: "14px",
-                    height: "14px",
-                    borderRadius: "50%",
-                    background: "var(--muted)",
-                    boxShadow: "0 0 0 4px rgba(96, 112, 134, 0.12)",
-                  }}
-                >
-                  <div
-                    className="tracking-destination"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      borderRadius: "50%",
-                      background: "rgba(96, 112, 134, 0.14)",
-                    }}
-                  />
-                </div>
-                <svg
-                  viewBox="0 0 260 180"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-                >
-                  <path
-                    d="M68 62C96 74 114 82 136 96C156 110 170 124 196 142"
-                    className="tracking-route"
-                    stroke="#607086"
-                    strokeWidth="3"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
+                <span>Credit/Debit Card</span>
+              </button>
 
-              <div style={{ marginTop: "14px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "12px",
-                  }}
-                >
-                  <span style={{ fontWeight: 700, color: "var(--text)" }}>Mechanic en route</span>
-                  <span style={{ color: "var(--muted)", fontSize: "0.88rem" }}>
-                    {activeRequests.length ? `${getProgress(activeRequests[0].status)}% complete` : "0% complete"}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    marginTop: "8px",
-                    height: "8px",
-                    borderRadius: "999px",
-                    background: "rgba(20, 32, 51, 0.12)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: `${activeRequests.length ? getProgress(activeRequests[0].status) : 0}%`,
-                      height: "100%",
-                      background: "linear-gradient(90deg, rgba(21, 34, 53, 0.8), rgba(96, 112, 134, 0.72))",
-                    }}
+              <button
+                type="button"
+                className={`active-pay-option ${selectedMethod === "wallet" ? "selected" : ""}`}
+                onClick={() => setSelectedMethod("wallet")}
+              >
+                <span>AutoAssist Wallet</span>
+                <strong style={{ color: "#16a34a" }}>$150.00</strong>
+              </button>
+
+              <button
+                type="button"
+                className={`active-pay-option ${selectedMethod === "cash" ? "selected" : ""}`}
+                onClick={() => setSelectedMethod("cash")}
+              >
+                <span>Cash Payment</span>
+              </button>
+            </div>
+
+            {selectedMethod === "card" ? (
+              <div className="app-grid" style={{ gap: "12px", marginTop: "18px" }}>
+                <div className="field">
+                  <label>Card Number</label>
+                  <input
+                    value={cardForm.number}
+                    onChange={(event) => setCardForm((current) => ({ ...current, number: event.target.value }))}
+                    placeholder="1234 5678 9012 3456"
                   />
                 </div>
-              </div>
 
-              <div className="chip-row" style={{ marginTop: "16px" }}>
-                <span className="info-chip" style={{ background: "rgba(255, 255, 255, 0.74)", color: "var(--text)" }}>
-                  Started
-                </span>
-                <span className="info-chip">Nearby</span>
-                <span className="info-chip">Arrived</span>
+                <div className="grid-two">
+                  <div className="field">
+                    <label>Expiry</label>
+                    <input
+                      value={cardForm.expiry}
+                      onChange={(event) => setCardForm((current) => ({ ...current, expiry: event.target.value }))}
+                      placeholder="MM/YY"
+                    />
+                  </div>
+                  <div className="field">
+                    <label>CVV</label>
+                    <input
+                      value={cardForm.cvv}
+                      onChange={(event) => setCardForm((current) => ({ ...current, cvv: event.target.value }))}
+                      placeholder="123"
+                    />
+                  </div>
+                </div>
               </div>
-              </div>
-            </aside>
+            ) : null}
+
+            <div className="active-modal-actions">
+              <button type="button" className="secondary-btn" onClick={closeAllModals}>
+                Cancel
+              </button>
+              <button type="button" className="primary-btn" onClick={handlePayment}>
+                Pay {formatCurrency((requests.find((request) => request._id === paymentModalFor) || {}).price || 75)}
+              </button>
+            </div>
           </div>
-        </section>
-      )}
-    </main>
+        </div>
+      ) : null}
+
+      {successModalFor ? (
+        <div className="active-modal-backdrop" onClick={handleSuccessClose}>
+          <div className="active-success-modal" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="active-modal-close" onClick={handleSuccessClose}>
+              x
+            </button>
+            <div className="active-success-check">OK</div>
+            <h2 style={{ margin: "8px 0 6px" }}>Payment Successful!</h2>
+            <p className="section-copy">Thank you for using AutoAssist</p>
+          </div>
+        </div>
+      ) : null}
+
+      {reviewModalFor ? (
+        <div className="active-modal-backdrop" onClick={() => handleReviewSubmit(reviewModalFor)}>
+          <div className="active-modal-card" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="active-modal-close" onClick={() => handleReviewSubmit(reviewModalFor)}>
+              x
+            </button>
+            <h2 style={{ margin: 0 }}>Rate Your Experience</h2>
+            <p className="section-copy" style={{ marginTop: "4px" }}>
+              How was your service with {getMechanicName()}?
+            </p>
+
+            <div className="active-review-service">
+              <span>Service</span>
+              <strong>{formatRequestTitle(requests.find((request) => request._id === reviewModalFor) || {})}</strong>
+            </div>
+
+            <div className="active-star-row">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`active-star-btn ${rating >= value ? "filled" : ""}`}
+                  onClick={() => setRating(value)}
+                >
+                  *
+                </button>
+              ))}
+            </div>
+
+            <div className="field">
+              <label>Additional Comments (Optional)</label>
+              <textarea
+                value={comments}
+                onChange={(event) => setComments(event.target.value)}
+                placeholder="Tell us about your experience..."
+              />
+            </div>
+
+            <div className="app-grid" style={{ gap: "10px" }}>
+              <p style={{ margin: 0, fontWeight: 700 }}>Quick feedback</p>
+              <div className="chip-row">
+                {["Professional", "On Time", "Friendly", "Expert", "Fair Price"].map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className={`info-chip active-review-chip ${quickTags.includes(tag) ? "selected" : ""}`}
+                    onClick={() => toggleQuickTag(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="active-modal-actions">
+              <button type="button" className="secondary-btn" onClick={() => handleReviewSubmit(reviewModalFor)}>
+                Skip
+              </button>
+              <button type="button" className="primary-btn" onClick={() => handleReviewSubmit(reviewModalFor)}>
+                Submit Review
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 

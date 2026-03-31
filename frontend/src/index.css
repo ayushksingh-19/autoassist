@@ -100,6 +100,19 @@ select {
   padding: 32px 0 56px;
 }
 
+.global-back-wrap {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-top: 14px;
+}
+
+.global-back-btn {
+  min-width: 108px;
+  border: 1px solid rgba(21, 34, 53, 0.08);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
 .hero-card,
 .surface-card {
   border: 1px solid var(--line);
@@ -516,6 +529,264 @@ select {
   border: 1px solid var(--line);
 }
 
+.home-footer {
+  margin-top: 12px;
+  padding: 36px;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.6fr);
+  gap: 36px;
+  background: linear-gradient(180deg, #162231 0%, #1f2d3d 100%);
+  color: #eff5fb;
+  border-radius: 32px;
+}
+
+.home-footer .section-copy {
+  color: rgba(239, 245, 251, 0.74);
+}
+
+.home-footer-brand {
+  display: grid;
+  gap: 18px;
+}
+
+.home-footer-info {
+  margin-top: 10px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.home-footer-info h3 {
+  margin: 12px 0 8px;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.home-footer-info p {
+  margin: 0;
+  color: rgba(239, 245, 251, 0.78);
+  line-height: 1.7;
+}
+
+.home-footer-payments h3,
+.home-footer-column h3 {
+  margin: 0 0 16px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.08rem;
+}
+
+.home-footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.home-footer-badge,
+.home-footer-social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f7fbff;
+  font-weight: 700;
+}
+
+.home-footer-badge-button {
+  gap: 10px;
+  cursor: pointer;
+}
+
+.home-footer-badge-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.home-footer-badge-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(47, 111, 237, 0.18);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.home-footer-logo-word,
+.home-footer-logo-phonepe,
+.home-footer-social-logo {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.visa-word {
+  color: #1a4bb8;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.rupay-word {
+  color: #2f6fed;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.paytm-word {
+  color: #00a7e7;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.upi-word {
+  color: #1f6f63;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.x-word {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.linkedin-word {
+  border-radius: 8px;
+  background: #0a66c2;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.home-footer-logo-phonepe {
+  border-radius: 999px;
+  background: #6b2cbf;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.home-footer-logo-mastercard {
+  position: relative;
+  width: 34px;
+  height: 22px;
+}
+
+.home-footer-logo-circle {
+  position: absolute;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+}
+
+.mastercard-left {
+  left: 4px;
+  background: #ea001b;
+}
+
+.mastercard-right {
+  right: 4px;
+  background: #f79e1b;
+  opacity: 0.95;
+}
+
+.instagram-logo {
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  position: relative;
+}
+
+.instagram-logo::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+}
+
+.instagram-logo::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.youtube-logo {
+  border-radius: 9px;
+  background: #ff0033;
+}
+
+.youtube-play {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #ffffff;
+  margin-left: 2px;
+}
+
+.home-footer-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.home-footer-column {
+  display: grid;
+  align-content: start;
+}
+
+.home-footer-link-list {
+  display: grid;
+  gap: 12px;
+}
+
+.home-footer-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(239, 245, 251, 0.82);
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.home-footer-link:hover {
+  color: #ffffff;
+}
+
+.home-footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.home-footer-contact {
+  display: grid;
+  gap: 8px;
+  color: rgba(239, 245, 251, 0.82);
+}
+
+.home-footer-contact strong {
+  color: #ffffff;
+}
+
 .topbar-spacer {
   height: 86px;
 }
@@ -550,6 +821,710 @@ select {
 .tracking-destination {
   animation: destination-pulse 1.8s ease-out infinite;
   transform-origin: center;
+}
+
+.active-requests-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.active-page-shell {
+  gap: 18px;
+}
+
+.active-page-header {
+  padding: 0 4px;
+}
+
+.active-request-card {
+  padding: 16px 18px 18px 18px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.active-request-top,
+.active-request-title-group,
+.active-mechanic-head,
+.active-mechanic-row,
+.active-mechanic-profile,
+.active-amount-row,
+.active-stat-line,
+.active-pay-option,
+.active-modal-actions,
+.active-tracking-caption {
+  display: flex;
+  align-items: center;
+}
+
+.active-request-top,
+.active-mechanic-head,
+.active-amount-row,
+.active-stat-line,
+.active-modal-actions,
+.active-tracking-caption {
+  justify-content: space-between;
+}
+
+.active-request-title-group,
+.active-mechanic-profile,
+.active-mechanic-actions,
+.active-stage-row {
+  gap: 12px;
+}
+
+.active-request-top {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.active-request-icon,
+.active-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.active-request-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(47, 111, 237, 0.1);
+  border: 1px solid rgba(47, 111, 237, 0.14);
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.active-request-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.active-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.active-mechanic-box {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(47, 111, 237, 0.2);
+  background: rgba(237, 244, 255, 0.78);
+}
+
+.active-mechanic-actions {
+  display: flex;
+}
+
+.mini-action-btn {
+  min-width: 48px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.active-mechanic-row {
+  margin-top: 12px;
+}
+
+.active-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-weight: 800;
+}
+
+.active-progress-list {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(21, 34, 53, 0.08);
+}
+
+.active-progress-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.92rem;
+  margin-top: 8px;
+}
+
+.active-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.active-progress-dot.done {
+  background: #20a652;
+}
+
+.active-progress-dot.live {
+  background: var(--accent);
+}
+
+.active-progress-time {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.active-amount-row {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(21, 34, 53, 0.08);
+}
+
+.active-amount-value {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.active-complete-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #16a34a, #10b140);
+  box-shadow: 0 18px 30px rgba(22, 163, 74, 0.16);
+}
+
+.active-success-banner {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.26);
+  background: rgba(224, 247, 234, 0.7);
+  display: grid;
+  gap: 4px;
+  color: #1f6f3d;
+}
+
+.active-tracking-pin {
+  position: absolute;
+  top: 28%;
+  left: 24%;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(47, 111, 237, 0.12);
+  border: 1px solid rgba(47, 111, 237, 0.18);
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.active-tracking-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(47, 111, 237, 0.18);
+}
+
+.active-tracking-destination {
+  position: absolute;
+  right: 12%;
+  bottom: 20%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.active-tracking-caption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.active-stage-row {
+  display: flex;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.active-stage-chip {
+  flex: 1;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(245, 247, 251, 0.94);
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.active-stage-chip.active {
+  background: rgba(34, 197, 94, 0.16);
+  color: #1f7a42;
+}
+
+.active-service-pill {
+  background: rgba(168, 85, 247, 0.14);
+  color: #8b34db;
+}
+
+.active-meta-value {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+}
+
+.active-problem-copy {
+  margin: 6px 0 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.active-tracking-card,
+.active-stats-card {
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.active-tracking-map {
+  margin-top: 16px;
+  height: 176px;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(231, 241, 255, 0.7), rgba(236, 248, 239, 0.7));
+}
+
+.active-tracking-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.active-tracking-title {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.active-tracking-time {
+  color: var(--accent);
+  font-size: 0.88rem;
+}
+
+.active-progress-bar-shell {
+  margin-top: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(20, 32, 51, 0.12);
+  overflow: hidden;
+}
+
+.active-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(21, 34, 53, 0.75), rgba(47, 111, 237, 0.82));
+}
+
+.active-stats-list {
+  display: grid;
+  gap: 14px;
+}
+
+.active-stat-line span {
+  color: var(--muted);
+}
+
+.active-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.46);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 1200;
+}
+
+.active-modal-card,
+.active-success-modal {
+  position: relative;
+  width: min(100%, 420px);
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.24);
+}
+
+.active-modal-card {
+  padding: 20px;
+}
+
+.active-success-modal {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.active-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.active-payment-total {
+  margin: 18px 0;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(47, 111, 237, 0.22);
+  background: rgba(236, 243, 255, 0.82);
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+
+.active-payment-total span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.active-payment-total strong {
+  font-size: 2rem;
+  color: var(--accent);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.active-pay-option {
+  width: 100%;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+}
+
+.active-pay-option.selected {
+  border-color: rgba(47, 111, 237, 0.32);
+  background: rgba(236, 243, 255, 0.82);
+}
+
+.active-modal-actions {
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.active-modal-actions > * {
+  flex: 1;
+}
+
+.active-success-check {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(34, 197, 94, 0.14);
+  color: #16a34a;
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.active-review-service {
+  margin: 18px 0;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(245, 247, 251, 0.92);
+  text-align: center;
+  display: grid;
+  gap: 6px;
+}
+
+.active-review-service span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.active-star-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.active-star-btn {
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.active-star-btn.filled {
+  color: #f59e0b;
+}
+
+.active-review-chip {
+  border: none;
+  cursor: pointer;
+}
+
+.active-review-chip.selected {
+  background: rgba(47, 111, 237, 0.12);
+  color: var(--accent);
+}
+
+.vehicle-health-hero,
+.vehicle-health-alerts,
+.vehicle-health-card,
+.vehicle-health-maintenance {
+  background: #ffffff;
+  box-shadow: none;
+  border-radius: 18px;
+}
+
+.vehicle-health-hero {
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  border-left: 4px solid rgba(47, 111, 237, 0.5);
+}
+
+.vehicle-health-heading {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.vehicle-health-score-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 0 8px;
+  flex-wrap: wrap;
+}
+
+.vehicle-health-score {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 3.4rem;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.vehicle-health-pill,
+.vehicle-health-mini-pill,
+.vehicle-health-priority {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.vehicle-health-pill {
+  padding: 8px 12px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #1f7a42;
+}
+
+.vehicle-health-secondary {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--line);
+}
+
+.vehicle-health-alerts,
+.vehicle-health-maintenance {
+  padding: 24px;
+}
+
+.vehicle-health-alerts {
+  border-left: 4px solid rgba(47, 111, 237, 0.22);
+}
+
+.vehicle-health-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.vehicle-health-alert-item,
+.vehicle-health-maintenance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(247, 250, 253, 0.82);
+}
+
+.vehicle-health-fix-btn {
+  min-width: 96px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid var(--line);
+}
+
+.vehicle-health-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.vehicle-health-card {
+  padding: 20px;
+  border-radius: 18px;
+}
+
+.vehicle-health-card-top,
+.vehicle-health-metric-row,
+.vehicle-health-detail-list > div,
+.vehicle-health-maintenance-left,
+.vehicle-health-maintenance-right {
+  display: flex;
+  align-items: center;
+}
+
+.vehicle-health-card-top,
+.vehicle-health-metric-row,
+.vehicle-health-detail-list > div,
+.vehicle-health-maintenance-item {
+  justify-content: space-between;
+}
+
+.vehicle-health-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.vehicle-health-icon.good,
+.vehicle-health-mini-pill.good {
+  background: rgba(47, 111, 237, 0.1);
+  color: var(--accent);
+}
+
+.vehicle-health-icon.watch,
+.vehicle-health-mini-pill.watch {
+  background: rgba(96, 112, 134, 0.12);
+  color: var(--muted);
+}
+
+.vehicle-health-icon.warning,
+.vehicle-health-mini-pill.warning {
+  background: rgba(195, 82, 65, 0.1);
+  color: #b24d43;
+}
+
+.vehicle-health-mini-pill {
+  padding: 6px 10px;
+  border: 1px solid rgba(21, 34, 53, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.vehicle-health-metric-row {
+  margin-top: 18px;
+  font-size: 0.92rem;
+}
+
+.vehicle-health-metric-row span {
+  color: var(--muted);
+}
+
+.vehicle-health-metric-row strong {
+  color: var(--accent);
+}
+
+.vehicle-health-progress {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(21, 34, 53, 0.14);
+}
+
+.vehicle-health-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(21, 34, 53, 0.85), rgba(47, 111, 237, 0.85));
+}
+
+.vehicle-health-detail-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.vehicle-health-detail-list span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.vehicle-health-detail-list strong {
+  font-size: 0.92rem;
+}
+
+.vehicle-health-maintenance-left,
+.vehicle-health-maintenance-right {
+  gap: 14px;
+}
+
+.vehicle-health-priority {
+  min-width: 64px;
+  padding: 7px 10px;
+  text-transform: lowercase;
+}
+
+.vehicle-health-priority.low {
+  background: rgba(47, 111, 237, 0.1);
+  color: var(--accent);
+}
+
+.vehicle-health-priority.medium {
+  background: rgba(96, 112, 134, 0.12);
+  color: var(--muted);
+}
+
+.vehicle-health-priority.high {
+  background: rgba(195, 82, 65, 0.1);
+  color: #b24d43;
+}
+
+.vehicle-health-price {
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+
+.vehicle-health-schedule-btn {
+  min-width: 108px;
+  padding: 12px 14px;
 }
 
 @keyframes route-flow {
@@ -612,8 +1587,28 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .active-requests-layout {
+    grid-template-columns: 1fr;
+  }
+
   .summary-card {
     position: static;
+  }
+
+  .home-footer,
+  .home-footer-links {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-health-hero,
+  .vehicle-health-alert-item,
+  .vehicle-health-maintenance-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vehicle-health-maintenance-right {
+    justify-content: space-between;
   }
 }
 

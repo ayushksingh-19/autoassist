@@ -45,9 +45,6 @@ function RegisterScreen() {
     <div className="auth-shell">
       <div className="auth-panel">
         <section className="auth-brand">
-          <span className="eyebrow" style={{ color: "#f6f2e9" }}>
-            Join AutoAssist
-          </span>
           <div style={{ marginTop: "18px", marginBottom: "14px" }}>
             <BrandLogo variant="dark" size="lg" />
           </div>

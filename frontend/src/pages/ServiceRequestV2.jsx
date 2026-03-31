@@ -23,6 +23,25 @@ function ServiceRequestV2() {
     paymentMethod: state.paymentMethod || "Pay after service",
     packageName: state.packageName || "",
     detailingService: state.detailingService || "",
+    chargerCapacity: state.chargerCapacity || "",
+    fuelQuantity: state.fuelQuantity || "",
+    roadsideAssistance: state.roadsideAssistance || "",
+    washPackage: state.washPackage || "",
+    tyreOption: state.tyreOption || "",
+    acOptions: state.acOptions || "",
+    lockoutOptions: state.lockoutOptions || "",
+    towingOptions: state.towingOptions || "",
+    detailingOptions: state.detailingOptions || "",
+    healthCheckOptions: state.healthCheckOptions || "",
+    engineDiagnosticOptions: state.engineDiagnosticOptions || "",
+    emergencyOptions: state.emergencyOptions || "",
+    bikeMechanicOptions: state.bikeMechanicOptions || "",
+    bikeBatteryOptions: state.bikeBatteryOptions || "",
+    bikeChainBrakeOptions: state.bikeChainBrakeOptions || "",
+    bikeSuspensionOptions: state.bikeSuspensionOptions || "",
+    bikeClutchGearOptions: state.bikeClutchGearOptions || "",
+    bikePickupDropOptions: state.bikePickupDropOptions || "",
+    bikeEngineJobOptions: state.bikeEngineJobOptions || "",
     price: state.price || state.packagePrice || 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,6 +165,197 @@ function ServiceRequestV2() {
               </div>
             </div>
 
+            {form.serviceType === "EV Charging" || form.serviceType === "Fuel Delivery" ? (
+              <div className="grid-two">
+                {form.serviceType === "EV Charging" ? (
+                  <div className="field">
+                    <label htmlFor="chargerCapacity">Charger Type / Capacity (kW)</label>
+                    <input
+                      id="chargerCapacity"
+                      value={form.chargerCapacity}
+                      onChange={setField("chargerCapacity")}
+                    />
+                  </div>
+                ) : (
+                  <div className="field">
+                    <label htmlFor="fuelQuantity">Fuel Quantity (litres)</label>
+                    <input
+                      id="fuelQuantity"
+                      value={form.fuelQuantity}
+                      onChange={setField("fuelQuantity")}
+                    />
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {form.serviceType === "Roadside Repair" ? (
+              <div className="field">
+                <label htmlFor="roadsideAssistance">Roadside Assistance</label>
+                <input
+                  id="roadsideAssistance"
+                  value={form.roadsideAssistance}
+                  onChange={setField("roadsideAssistance")}
+                />
+              </div>
+            ) : null}
+
+            {form.serviceType === "Washing & Cleaning" ? (
+              <div className="field">
+                <label htmlFor="washPackage">Cleaning Package</label>
+                <input id="washPackage" value={form.washPackage} onChange={setField("washPackage")} />
+              </div>
+            ) : null}
+
+            {form.serviceType === "Tyre Services" ? (
+              <div className="field">
+                <label htmlFor="tyreOption">Tyre Service Option</label>
+                <input id="tyreOption" value={form.tyreOption} onChange={setField("tyreOption")} />
+              </div>
+            ) : null}
+
+            {serviceLabel === "AC Check & Cooling" ? (
+              <div className="field">
+                <label htmlFor="acOptions">AC Service Options</label>
+                <input id="acOptions" value={form.acOptions} onChange={setField("acOptions")} />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Lockout Assistance" ? (
+              <div className="field">
+                <label htmlFor="lockoutOptions">Lockout Assistance Options</label>
+                <input id="lockoutOptions" value={form.lockoutOptions} onChange={setField("lockoutOptions")} />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Towing & Recovery" ? (
+              <div className="field">
+                <label htmlFor="towingOptions">Towing Options</label>
+                <input id="towingOptions" value={form.towingOptions} onChange={setField("towingOptions")} />
+              </div>
+            ) : null}
+
+            {form.serviceType === "Detailing" ? (
+              <div className="field">
+                <label htmlFor="detailingOptions">Detailing Options</label>
+                <input
+                  id="detailingOptions"
+                  value={form.detailingOptions}
+                  onChange={setField("detailingOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Health Check-Up" || serviceLabel === "Vehicle Health Check-Up" ? (
+              <div className="field">
+                <label htmlFor="healthCheckOptions">Health Check Options</label>
+                <input
+                  id="healthCheckOptions"
+                  value={form.healthCheckOptions}
+                  onChange={setField("healthCheckOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Engine Diagnostics" ? (
+              <div className="field">
+                <label htmlFor="engineDiagnosticOptions">Engine Diagnostic Options</label>
+                <input
+                  id="engineDiagnosticOptions"
+                  value={form.engineDiagnosticOptions}
+                  onChange={setField("engineDiagnosticOptions")}
+                />
+              </div>
+            ) : null}
+
+            {form.serviceType === "SOS Emergency" ? (
+              <div className="field">
+                <label htmlFor="emergencyOptions">Emergency Support Options</label>
+                <input
+                  id="emergencyOptions"
+                  value={form.emergencyOptions}
+                  onChange={setField("emergencyOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Mobile Mechanic" ? (
+              <div className="field">
+                <label htmlFor="bikeMechanicOptions">Bike Mechanic Options</label>
+                <input
+                  id="bikeMechanicOptions"
+                  value={form.bikeMechanicOptions}
+                  onChange={setField("bikeMechanicOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Battery Service" ? (
+              <div className="field">
+                <label htmlFor="bikeBatteryOptions">Battery Service Options</label>
+                <input
+                  id="bikeBatteryOptions"
+                  value={form.bikeBatteryOptions}
+                  onChange={setField("bikeBatteryOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Chain & Brake Repair" ? (
+              <div className="field">
+                <label htmlFor="bikeChainBrakeOptions">Chain and Brake Options</label>
+                <input
+                  id="bikeChainBrakeOptions"
+                  value={form.bikeChainBrakeOptions}
+                  onChange={setField("bikeChainBrakeOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Suspension Check" ? (
+              <div className="field">
+                <label htmlFor="bikeSuspensionOptions">Suspension Options</label>
+                <input
+                  id="bikeSuspensionOptions"
+                  value={form.bikeSuspensionOptions}
+                  onChange={setField("bikeSuspensionOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Clutch & Gear Support" ? (
+              <div className="field">
+                <label htmlFor="bikeClutchGearOptions">Clutch and Gear Options</label>
+                <input
+                  id="bikeClutchGearOptions"
+                  value={form.bikeClutchGearOptions}
+                  onChange={setField("bikeClutchGearOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Pickup & Workshop Drop" ? (
+              <div className="field">
+                <label htmlFor="bikePickupDropOptions">Pickup and Drop Options</label>
+                <input
+                  id="bikePickupDropOptions"
+                  value={form.bikePickupDropOptions}
+                  onChange={setField("bikePickupDropOptions")}
+                />
+              </div>
+            ) : null}
+
+            {serviceLabel === "Engine Jobs" ? (
+              <div className="field">
+                <label htmlFor="bikeEngineJobOptions">Engine Job Options</label>
+                <input
+                  id="bikeEngineJobOptions"
+                  value={form.bikeEngineJobOptions}
+                  onChange={setField("bikeEngineJobOptions")}
+                />
+              </div>
+            ) : null}
+
             <div className="field">
               <label htmlFor="location">Location</label>
               <input
@@ -227,6 +437,120 @@ function ServiceRequestV2() {
             <strong>Timing</strong>
             <p>{form.timeSlot || "ASAP dispatch"}</p>
           </div>
+          {form.serviceType === "EV Charging" ? (
+            <div>
+              <strong>Charger</strong>
+              <p>{form.chargerCapacity || "Not specified yet"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "Fuel Delivery" ? (
+            <div>
+              <strong>Fuel quantity</strong>
+              <p>{form.fuelQuantity ? `${form.fuelQuantity} litres` : "Not specified yet"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "Roadside Repair" ? (
+            <div>
+              <strong>Roadside support</strong>
+              <p>{form.roadsideAssistance || "No assistance add-on"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "Washing & Cleaning" ? (
+            <div>
+              <strong>Cleaning package</strong>
+              <p>{form.washPackage || "No wash package selected"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "Tyre Services" ? (
+            <div>
+              <strong>Tyre service</strong>
+              <p>{form.tyreOption || "No tyre option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "AC Check & Cooling" ? (
+            <div>
+              <strong>AC service</strong>
+              <p>{form.acOptions || "No AC option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Lockout Assistance" ? (
+            <div>
+              <strong>Lockout assistance</strong>
+              <p>{form.lockoutOptions || "No lockout option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Towing & Recovery" ? (
+            <div>
+              <strong>Towing service</strong>
+              <p>{form.towingOptions || "No towing option selected"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "Detailing" ? (
+            <div>
+              <strong>Detailing service</strong>
+              <p>{form.detailingOptions || "No detailing option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Health Check-Up" || serviceLabel === "Vehicle Health Check-Up" ? (
+            <div>
+              <strong>Health check</strong>
+              <p>{form.healthCheckOptions || "No health check option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Engine Diagnostics" ? (
+            <div>
+              <strong>Engine diagnostics</strong>
+              <p>{form.engineDiagnosticOptions || "No engine diagnostic option selected"}</p>
+            </div>
+          ) : null}
+          {form.serviceType === "SOS Emergency" ? (
+            <div>
+              <strong>Emergency support</strong>
+              <p>{form.emergencyOptions || "No emergency option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Mobile Mechanic" ? (
+            <div>
+              <strong>Bike mechanic support</strong>
+              <p>{form.bikeMechanicOptions || "No mechanic option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Battery Service" ? (
+            <div>
+              <strong>Battery service</strong>
+              <p>{form.bikeBatteryOptions || "No battery option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Chain & Brake Repair" ? (
+            <div>
+              <strong>Chain and brake service</strong>
+              <p>{form.bikeChainBrakeOptions || "No chain or brake option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Suspension Check" ? (
+            <div>
+              <strong>Suspension service</strong>
+              <p>{form.bikeSuspensionOptions || "No suspension option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Clutch & Gear Support" ? (
+            <div>
+              <strong>Clutch and gear service</strong>
+              <p>{form.bikeClutchGearOptions || "No clutch or gear option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Pickup & Workshop Drop" ? (
+            <div>
+              <strong>Pickup and drop service</strong>
+              <p>{form.bikePickupDropOptions || "No pickup option selected"}</p>
+            </div>
+          ) : null}
+          {serviceLabel === "Engine Jobs" ? (
+            <div>
+              <strong>Engine jobs</strong>
+              <p>{form.bikeEngineJobOptions || "No engine job option selected"}</p>
+            </div>
+          ) : null}
           <div>
             <strong>Location status</strong>
             <p>{form.lat && form.lng ? "Coordinates captured" : "Manual address entry"}</p>
