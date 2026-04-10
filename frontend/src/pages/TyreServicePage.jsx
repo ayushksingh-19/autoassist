@@ -11,7 +11,7 @@ function TyreServicePage() {
     const [userLocation, setUserLocation] = useState(""); // ✅ FIXED
   const handleRequest = () => {
   const requestData = {
-    service: "Tire Service",
+    service: "Tyre Service",
     vehicle: "Bike",
     location: userLocation,
     problem: "Tyre issue",
@@ -113,7 +113,7 @@ const detectLocation = () => {
         {/* ✅ HEADER FIXED */}
         <div style={{ marginBottom: "20px" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "5px" }}>
-            Request Tire Service
+            Request Tyre Service
           </h2>
           <p style={subText}>
             Customize your service request and choose a package

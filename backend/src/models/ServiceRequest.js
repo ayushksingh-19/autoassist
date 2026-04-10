@@ -58,13 +58,28 @@ lat: Number,
 lng: Number,
   status: {
     type: String,
-    enum: ["pending", "accepted", "completed"],
+    enum: ["pending", "assigned", "accepted", "completed"],
     default: "pending"
   },
 
   assignedMechanic: {
     type: String
   },
+
+  mechanicPhone: String,
+  mechanicRating: Number,
+  mechanicEta: String,
+  mechanicDistance: String,
+  mechanicSpeciality: String,
+  assignedSupportVehicle: String,
+  assignedVehiclePlate: String,
+  chatThread: [
+    {
+      sender: String,
+      message: String,
+      time: String
+    }
+  ],
 
   mechanicId: {
     type: String,

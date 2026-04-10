@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const serviceHistory = [
-  { name: "Emergency Mechanic", price: 120 },
-  { name: "Tyre Service", price: 80 },
-  { name: "Battery Jump Start", price: 40 },
+  { name: "Emergency Mechanic", price: 1200 },
+  { name: "Tyre Service", price: 800 },
+  { name: "Battery Jump Start", price: 400 },
 ];
 
 const vehicles = [
-  { model: "Toyota Camry 2020", plate: "ABC 1234" },
-  { model: "Honda CB350 2021", plate: "XYZ 5678" },
+  { model: "Maruti Suzuki Baleno 2022", plate: "MH 12 AB 1234" },
+  { model: "Honda CB350 2021", plate: "DL 03 XY 5678" },
 ];
 
 function ProfileV2() {
@@ -84,10 +84,10 @@ function ProfileV2() {
                   fontWeight: 700,
                 }}
               >
-                JD
+                RS
               </div>
               <div>
-                <h2 style={{ margin: "0 0 6px" }}>John Doe</h2>
+                <h2 style={{ margin: "0 0 6px" }}>Rahul Sharma</h2>
                 <p className="section-copy">Member since March 2026</p>
               </div>
             </div>
@@ -104,19 +104,19 @@ function ProfileV2() {
           <div className="grid-two" style={{ marginTop: "24px" }}>
             <div className="field">
               <label>Full Name</label>
-              <input value="John Doe" disabled />
+              <input value="Rahul Sharma" disabled />
             </div>
             <div className="field">
               <label>Email</label>
-              <input value="john@example.com" disabled />
+              <input value="rahul.sharma@example.in" disabled />
             </div>
             <div className="field">
               <label>Phone</label>
-              <input value="+1234567890" disabled />
+              <input value="+91 98765 43210" disabled />
             </div>
             <div className="field">
               <label>Address</label>
-              <input value="123 Main Street" disabled />
+              <input value="Andheri West, Mumbai" disabled />
             </div>
           </div>
         </article>

@@ -26,8 +26,8 @@ function BikeDashboard() {
       type: "mechanic",
     },
     {
-      title: "Tire & Tube Service",
-      desc: "Puncture repair & tire replacement",
+      title: "Tyre & Tube Service",
+      desc: "Puncture repair & tyre replacement",
       color: "#090b0a",
       tag: "",
       type: "tyre",

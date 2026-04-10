@@ -1,5 +1,6 @@
 import {
   BrowserRouter as Router,
+  Navigate,
   Routes,
   Route,
   useLocation,
@@ -10,9 +11,9 @@ import VehicleSelectionV2 from "./pages/VehicleSelectionV2";
 import RegisterScreen from "./pages/RegisterScreen";
 import LoginScreen from "./pages/LoginScreen";
 import ServiceRequestV2 from "./pages/ServiceRequestV2";
-import MechanicDashboard from "./pages/MechanicDashboard";
 import MyRequestsV2 from "./pages/MyRequestsV2";
 import AppNavbar from "./components/AppNavbar";
+import ScrollReveal from "./components/ScrollReveal";
 import ProtectedRoute from "./components/ProtectedRoute";
 import FuelSelectionV2 from "./pages/FuelSelectionV2";
 import ProfileV2 from "./pages/ProfileV2";
@@ -28,6 +29,10 @@ import TyreServicePage from "./pages/TyreServicePage";
 import "leaflet/dist/leaflet.css";
 import WalletV2 from "./pages/WalletV2";
 import VehicleHealthMonitorV2 from "./pages/VehicleHealthMonitorV2";
+import ExplorePage from "./pages/ExplorePage";
+import PremiumPackagesPage from "./pages/PremiumPackagesPage";
+import FloatingCallButton from "./components/FloatingCallButton";
+import EmergencyCallPage from "./pages/EmergencyCallPage";
 
 function GlobalBackButton() {
   const navigate = useNavigate();
@@ -35,6 +40,7 @@ function GlobalBackButton() {
 
   const hideBackButton =
     location.pathname === "/" ||
+    location.pathname === "/explore" ||
     location.pathname === "/login" ||
     location.pathname === "/register";
 
@@ -61,13 +67,16 @@ function Layout({ children }) {
   const hideNavbar =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
-    location.pathname === "/";
+    location.pathname === "/" ||
+    location.pathname === "/explore";
 
   return (
     <div className="app-shell">
+      <ScrollReveal />
       {!hideNavbar && <AppNavbar />}
       <GlobalBackButton />
       {children}
+      <FloatingCallButton />
     </div>
   );
 }
@@ -77,7 +86,8 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<LoginScreen />} />
+          <Route path="/" element={<ExplorePage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/wallet" element={<WalletV2 />} />
@@ -97,6 +107,8 @@ function App() {
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/active" element={<ActiveRequestsV2 />} />
           <Route path="/vehicle-health" element={<VehicleHealthMonitorV2 />} />
+          <Route path="/packages" element={<PremiumPackagesPage />} />
+          <Route path="/emergency-call" element={<EmergencyCallPage />} />
 
           <Route
             path="/service-request"
@@ -111,7 +123,7 @@ function App() {
             path="/mechanic"
             element={
               <ProtectedRoute>
-                <MechanicDashboard />
+                <Navigate to="/active" replace />
               </ProtectedRoute>
             }
           />

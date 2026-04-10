@@ -1,47 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const defaultPackageOptions = [
-  {
-    name: "Essential",
-    price: 1499,
-    eta: "20-30 min",
-    features: ["Core roadside help", "Basic inspection", "Quick dispatch"],
-  },
-  {
-    name: "Priority",
-    price: 2499,
-    eta: "15-25 min",
-    features: ["Experienced mechanic", "Priority queue", "Expanded checks"],
-  },
-  {
-    name: "Signature",
-    price: 3999,
-    eta: "15-20 min",
-    features: ["Senior support", "High-priority routing", "Premium assistance"],
-  },
-];
-
-const carPackageOptions = [
-  {
-    name: "Basic Care",
-    price: 1199,
-    eta: "25-35 min",
-    features: ["Roadside visit", "Basic fault check", "Single issue support"],
-  },
-  {
-    name: "Priority Care",
-    price: 2199,
-    eta: "15-25 min",
-    features: ["Faster dispatch", "Senior mechanic", "Minor repair attempt"],
-  },
-  {
-    name: "Premium Care",
-    price: 3499,
-    eta: "15-20 min",
-    features: ["Priority routing", "Advanced diagnostics", "Breakdown coordination"],
-  },
-];
 
 const extras = [
   { name: "Brake adjustment", price: 200 },
@@ -132,7 +90,7 @@ const bikeRoadsideAssistanceOptions = [
 ];
 
 const carWashOptions = [
-  { value: "none", label: "No wash package selected", price: 0 },
+  { value: "none", label: "No cleaning option selected", price: 0 },
   { value: "basic-exterior", label: "Basic exterior wash", price: 299 },
   { value: "foam-wash", label: "Foam wash", price: 399 },
   { value: "interior-vacuum", label: "Interior vacuum cleaning", price: 449 },
@@ -149,7 +107,7 @@ const carWashOptions = [
 ];
 
 const bikeWashOptions = [
-  { value: "none", label: "No wash package selected", price: 0 },
+  { value: "none", label: "No cleaning option selected", price: 0 },
   { value: "basic-bike-wash", label: "Basic bike wash", price: 149 },
   { value: "foam-bike-wash", label: "Foam bike wash", price: 219 },
   { value: "chain-cleaning", label: "Chain cleaning", price: 179 },
@@ -461,7 +419,6 @@ function ServicePageV2() {
   const serviceLabel = location.state?.serviceLabel || serviceType;
   const presetFuelType = location.state?.fuelType || "";
   const presetProblem = location.state?.presetProblem || "";
-  const packageOptions = vehicleType === "Car" ? carPackageOptions : defaultPackageOptions;
   const isRoadsideRepair = serviceType === "Roadside Repair";
   const isBatteryJumpStart = serviceLabel === "Battery Jump Start" || serviceLabel === "Battery Service";
   const isLockoutAssistance = serviceLabel === "Lockout Assistance";
@@ -483,12 +440,8 @@ function ServicePageV2() {
   const isWashingAndCleaning = serviceType === "Washing & Cleaning";
   const isTyreService = serviceType === "Tyre Services";
   const isAcCheckAndCooling = serviceLabel === "AC Check & Cooling";
-  const packagesDisabled = isEvCharging || isFuelDelivery || isSosEmergency;
   const optionalServicesDisabled = isEvCharging || isFuelDelivery || isSosEmergency;
 
-  const [selectedPackage, setSelectedPackage] = useState(
-    isEvCharging || isFuelDelivery || isSosEmergency ? "" : packageOptions[0].name
-  );
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [scheduleType, setScheduleType] = useState("now");
   const [scheduleDate, setScheduleDate] = useState("");
@@ -520,14 +473,6 @@ function ServicePageV2() {
     query: `${serviceLabel} near me`,
     helper: "Open nearby service providers in Google Maps.",
   };
-
-  const selectedPackageData = useMemo(() => {
-    if (packagesDisabled || !selectedPackage) {
-      return null;
-    }
-
-    return packageOptions.find((item) => item.name === selectedPackage) || packageOptions[0];
-  }, [packageOptions, packagesDisabled, selectedPackage]);
 
   const evBaseVisitPrice = isEvCharging ? (vehicleType === "Bike" ? 249 : 399) : 0;
   const evCapacityPrice = isEvCharging ? getEvCapacityPrice(chargerCapacity) : 0;
@@ -660,7 +605,6 @@ function ServicePageV2() {
     return sum + (extra?.price || 0);
   }, 0);
 
-  const packageBasePrice = selectedPackageData?.price || 0;
   const serviceSpecificPrice = isEvCharging
     ? evBaseVisitPrice + evCapacityPrice
     : isFuelDelivery
@@ -702,7 +646,7 @@ function ServicePageV2() {
                                         : isBikeEngineJobs
                                           ? bikeEngineJobPrice
                                       : 0;
-  const total = packageBasePrice + serviceSpecificPrice + extrasTotal;
+  const total = serviceSpecificPrice + extrasTotal;
 
   const toggleExtra = (name) => {
     setSelectedExtras((current) =>
@@ -766,9 +710,9 @@ function ServicePageV2() {
                       alignItems: "flex-start",
                       padding: "12px 14px",
                       borderRadius: "14px",
-                      border: active ? "1px solid rgba(31, 111, 99, 0.28)" : "1px solid var(--line)",
+                      border: active ? "1px solid rgba(45, 102, 220, 0.28)" : "1px solid var(--line)",
                       background: active
-                        ? "linear-gradient(180deg, rgba(238, 247, 244, 0.95), rgba(245, 250, 248, 0.96))"
+                        ? "linear-gradient(180deg, rgba(239, 245, 255, 0.96), rgba(248, 251, 255, 0.98))"
                         : "rgba(255, 255, 255, 0.72)",
                       cursor: "pointer",
                     }}
@@ -828,8 +772,8 @@ function ServicePageV2() {
         serviceLabel,
         vehicleType,
         fuelType: presetFuelType,
-        packageName: selectedPackageData?.name || "",
-        packagePrice: selectedPackageData?.price || 0,
+        packageName: "",
+        packagePrice: 0,
         price: total,
         problem,
         location: locationText,
@@ -883,12 +827,12 @@ function ServicePageV2() {
         <div className="hero-card" style={{ padding: "32px" }}>
           <span className="eyebrow">{serviceLabel}</span>
           <h1 className="section-title">{serviceLabel}</h1>
-          <p className="section-copy">Choose package and request details.</p>
+          <p className="section-copy">Select the exact service options you need. Premium plans now live on the Packages page.</p>
 
           <div className="chip-row" style={{ marginTop: "18px" }}>
             <span className="info-chip">Vehicle: {vehicleType}</span>
             <span className="info-chip">
-              ETA: {selectedPackageData?.eta || (serviceType === "Fuel Delivery" ? "15-25 min" : "10-20 min")}
+              ETA: {serviceType === "Fuel Delivery" ? "15-25 min" : "10-20 min"}
             </span>
             <span className="info-chip">Fuel: {presetFuelType || "Not required"}</span>
             {isEvCharging ? (
@@ -962,7 +906,7 @@ function ServicePageV2() {
             ) : null}
             {isWashingAndCleaning ? (
               <span className="info-chip">
-                Pricing: {vehicleType === "Bike" ? "bike wash packages from Rs 149" : "car wash packages from Rs 299"}
+                Pricing: {vehicleType === "Bike" ? "bike cleaning options from Rs 149" : "car cleaning options from Rs 299"}
               </span>
             ) : null}
           </div>
@@ -994,6 +938,9 @@ function ServicePageV2() {
               </div>
 
               <div className="inline-actions">
+                <button type="button" className="secondary-btn" onClick={() => navigate("/packages")}>
+                  View Premium Packages
+                </button>
                 <button type="button" className="secondary-btn" onClick={openNearbySearch}>
                   {nearbyService.buttonLabel}
                 </button>
@@ -1011,66 +958,6 @@ function ServicePageV2() {
             </div>
           </div>
         </div>
-
-        {!packagesDisabled ? (
-          <div className="surface-card" style={{ padding: "28px" }}>
-            <div className="stack">
-              <div>
-                <h2 style={{ margin: 0 }}>Choose your package</h2>
-                <p className="section-copy" style={{ marginTop: "8px" }}>
-                  Pick a package or continue without one if you only need specific services.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="list-card"
-                onClick={() => setSelectedPackage("")}
-                style={{
-                  textAlign: "left",
-                  cursor: "pointer",
-                  borderColor: !selectedPackage ? "rgba(96, 112, 134, 0.28)" : "var(--line)",
-                  background: !selectedPackage ? "rgba(255, 255, 255, 0.98)" : undefined,
-                }}
-              >
-                <h3 className="feature-title">No package</h3>
-                <p className="feature-copy">Continue with only the services and details you select below.</p>
-              </button>
-
-              <div className="dashboard-grid">
-                {packageOptions.map((item) => {
-                  const active = item.name === selectedPackage;
-
-                  return (
-                    <button
-                      key={item.name}
-                      type="button"
-                      onClick={() => setSelectedPackage(item.name)}
-                      className="list-card"
-                      style={{
-                        textAlign: "left",
-                        cursor: "pointer",
-                        borderColor: active ? "rgba(212, 106, 58, 0.3)" : "var(--line)",
-                        background: active
-                          ? "linear-gradient(180deg, rgba(255, 244, 235, 0.98), rgba(251, 239, 230, 0.95))"
-                          : undefined,
-                      }}
-                    >
-                      <span className="feature-tag">{item.eta}</span>
-                      <h3 className="feature-title">{item.name}</h3>
-                      <p className="feature-copy">Rs {item.price.toLocaleString("en-IN")}</p>
-                      {item.features.map((feature) => (
-                        <p key={feature} style={{ margin: "10px 0 0", color: "var(--muted)" }}>
-                          {feature}
-                        </p>
-                      ))}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        ) : null}
 
         <div className="surface-card" style={{ padding: "28px" }}>
           <div className="stack">
@@ -1345,9 +1232,9 @@ function ServicePageV2() {
                     style={{
                       textAlign: "left",
                       cursor: "pointer",
-                      borderColor: active ? "rgba(31, 111, 99, 0.28)" : "var(--line)",
+                      borderColor: active ? "rgba(45, 102, 220, 0.28)" : "var(--line)",
                       background: active
-                        ? "linear-gradient(180deg, rgba(238, 247, 244, 0.95), rgba(245, 250, 248, 0.96))"
+                        ? "linear-gradient(180deg, rgba(239, 245, 255, 0.96), rgba(248, 251, 255, 0.98))"
                         : undefined,
                     }}
                   >
@@ -1366,23 +1253,13 @@ function ServicePageV2() {
       </section>
 
       <aside className="summary-card">
-        <span className="eyebrow" style={{ color: "#f6f2e9", background: "rgba(255,255,255,0.1)" }}>
+        <span className="eyebrow" style={{ color: "var(--accent-strong)", background: "var(--accent-soft)" }}>
           Request Summary
         </span>
         <h2 style={{ fontFamily: '"Space Grotesk", sans-serif', marginBottom: "8px" }}>{serviceLabel}</h2>
         <p>{vehicleModel || vehicleType}</p>
 
         <div className="stack" style={{ marginTop: "20px" }}>
-          <div>
-            <strong>Package</strong>
-            <p>{packagesDisabled ? "Not required" : selectedPackageData?.name || "No package selected"}</p>
-          </div>
-          {!packagesDisabled ? (
-            <div>
-              <strong>Base price</strong>
-              <p>Rs {(selectedPackageData?.price || 0).toLocaleString("en-IN")}</p>
-            </div>
-          ) : null}
           {isEvCharging ? (
             <>
               <div>
@@ -1714,15 +1591,15 @@ function ServicePageV2() {
           {isWashingAndCleaning ? (
             <>
               <div>
-                <strong>Cleaning package</strong>
-                <p>{activeWashSelection.length ? activeWashSelection.map((option) => option.label).join(", ") : "No wash package selected"}</p>
+                <strong>Cleaning options</strong>
+                <p>{activeWashSelection.length ? activeWashSelection.map((option) => option.label).join(", ") : "No cleaning option selected"}</p>
               </div>
               <div>
                 <strong>Estimate</strong>
                 <p>
                   {washPackagePrice
                     ? `Rs ${washPackagePrice.toLocaleString("en-IN")}`
-                    : "Select cleaning package"}
+                    : "Select cleaning options"}
                 </p>
               </div>
             </>
@@ -1745,7 +1622,7 @@ function ServicePageV2() {
           ) : null}
           <div>
             <strong>Total</strong>
-            <p style={{ color: "#fff7ef", fontSize: "1.8rem", fontWeight: 800 }}>
+            <p style={{ color: "var(--accent)", fontSize: "1.8rem", fontWeight: 800 }}>
               Rs {total.toLocaleString("en-IN")}
             </p>
           </div>

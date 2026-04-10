@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const alertItems = [
@@ -48,7 +48,7 @@ const healthCards = [
     nextService: "Service soon",
   },
   {
-    title: "Tire Pressure",
+    title: "Tyre Pressure",
     icon: "TP",
     tone: "good",
     score: 95,
@@ -66,9 +66,9 @@ const healthCards = [
 ];
 
 const maintenanceItems = [
-  { priority: "medium", title: "Oil Change", due: "Due in 500 km", price: "$45" },
-  { priority: "high", title: "Brake Inspection", due: "Due in 300 km", price: "$25" },
-  { priority: "low", title: "Tire Rotation", due: "Due in 1,200 km", price: "$35" },
+  { priority: "medium", title: "Oil Change", due: "Due in 500 km", price: "Rs 3,700" },
+  { priority: "high", title: "Brake Inspection", due: "Due in 300 km", price: "Rs 2,100" },
+  { priority: "low", title: "Tyre Rotation", due: "Due in 1,200 km", price: "Rs 2,900" },
 ];
 
 function VehicleHealthMonitorV2() {

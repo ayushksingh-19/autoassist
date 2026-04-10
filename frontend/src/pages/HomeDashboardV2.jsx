@@ -13,7 +13,7 @@ const vehicleOptions = [
   },
   {
     title: "Bike",
-    description: "Fast bike breakdown support, tire and tube service, fuel help, and home pickup care.",
+    description: "Fast bike breakdown support, tyre and tube service, fuel help, and home pickup care.",
     accent: "linear-gradient(135deg, #d46a3a, #c35241)",
     icon: "B",
     cta: "Open Bike Services",

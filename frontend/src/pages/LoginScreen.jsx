@@ -35,7 +35,7 @@ function LoginScreen() {
       <div className="auth-panel">
         <section className="auth-brand">
           <div style={{ marginTop: "18px", marginBottom: "14px" }}>
-            <BrandLogo variant="dark" size="lg" />
+            <BrandLogo size="lg" />
           </div>
           <h1>Roadside support that feels premium, fast, and local.</h1>
           <p>

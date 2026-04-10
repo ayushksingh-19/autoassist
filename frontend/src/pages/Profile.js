@@ -43,7 +43,7 @@ function Profile() {
                 👤
               </div>
               <div>
-                <h3 className="font-semibold">John Doe</h3>
+                <h3 className="font-semibold">Rahul Sharma</h3>
                 <p className="text-gray-500 text-sm">
                   Member since March 2026
                 </p>
@@ -61,25 +61,25 @@ function Profile() {
           <div className="grid grid-cols-2 gap-4">
 
             <input
-              value="John Doe"
+              value="Rahul Sharma"
               disabled
               className="border p-2 rounded bg-gray-100"
             />
 
             <input
-              value="john@example.com"
+              value="rahul.sharma@example.in"
               disabled
               className="border p-2 rounded bg-gray-100"
             />
 
             <input
-              value="+1234567890"
+              value="+91 98765 43210"
               disabled
               className="border p-2 rounded bg-gray-100"
             />
 
             <input
-              value="123 Main Street"
+              value="Andheri West, Mumbai"
               disabled
               className="border p-2 rounded bg-gray-100"
             />
@@ -119,8 +119,8 @@ function Profile() {
 
             <div className="flex justify-between border p-3 rounded">
               <div>
-                <p className="font-semibold">Toyota Camry 2020</p>
-                <p className="text-gray-500 text-sm">ABC 1234</p>
+                <p className="font-semibold">Maruti Suzuki Baleno 2022</p>
+                <p className="text-gray-500 text-sm">MH 12 AB 1234</p>
               </div>
 
               <div className="flex gap-2">
@@ -136,7 +136,7 @@ function Profile() {
             <div className="flex justify-between border p-3 rounded">
               <div>
                 <p className="font-semibold">Honda CB350 2021</p>
-                <p className="text-gray-500 text-sm">XYZ 5678</p>
+                <p className="text-gray-500 text-sm">DL 03 XY 5678</p>
               </div>
 
               <div className="flex gap-2">
@@ -162,9 +162,9 @@ function Profile() {
           <div className="space-y-3">
 
             {[
-              { name: "Emergency Mechanic", price: 120 },
-              { name: "Tire Service", price: 80 },
-              { name: "Battery Jump-Start", price: 40 },
+              { name: "Emergency Mechanic", price: 1200 },
+              { name: "Tyre Service", price: 800 },
+              { name: "Battery Jump-Start", price: 400 },
             ].map((item, i) => (
               <div key={i} className="flex justify-between border p-3 rounded">
 
@@ -176,7 +176,7 @@ function Profile() {
                 </div>
 
                 <div className="text-right">
-                  <p className="font-semibold">${item.price}</p>
+                  <p className="font-semibold">Rs {item.price}</p>
                   <button
                     onClick={() => alert("Viewing details")}
                     className="text-blue-600 text-sm"

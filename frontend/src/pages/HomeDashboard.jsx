@@ -28,7 +28,7 @@ function HomeDashboard() {
 
           <ul style={list}>
             <li>Emergency mechanic service</li>
-            <li>Tire replacement & repair</li>
+            <li>Tyre replacement & repair</li>
             <li>Battery jump start</li>
             <li>Fuel delivery</li>
             <li>Towing service</li>
@@ -49,7 +49,7 @@ function HomeDashboard() {
 
           <ul style={list}>
             <li>Mobile mechanic service</li>
-            <li>Tire & tube replacement</li>
+            <li>Tyre & tube replacement</li>
             <li>Battery service</li>
             <li>Fuel delivery</li>
             <li>Chain & brake repair</li>

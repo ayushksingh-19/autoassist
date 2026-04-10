@@ -3,6 +3,59 @@ const router = express.Router();
 const Service = require("../models/ServiceRequest");
 const authMiddleware = require("../middlewares/auth");
 const mongoose = require("mongoose");
+
+const mechanicPool = [
+  {
+    id: "AUTO-MECH-101",
+    name: "Ravi Sharma",
+    phone: "+919876543210",
+    rating: 4.8,
+    eta: "8-12 min",
+    distance: "2.3 km away",
+    speciality: "Emergency mechanic",
+    vehicle: "AutoAssist Rapid Van",
+    plate: "MH 12 AA 2045",
+  },
+  {
+    id: "AUTO-MECH-102",
+    name: "Amit Verma",
+    phone: "+919812345670",
+    rating: 4.7,
+    eta: "10-15 min",
+    distance: "3.1 km away",
+    speciality: "Tyre and battery support",
+    vehicle: "AutoAssist Service Bike",
+    plate: "DL 05 AS 1188",
+  },
+  {
+    id: "AUTO-MECH-103",
+    name: "Suresh Patil",
+    phone: "+919900112233",
+    rating: 4.9,
+    eta: "12-18 min",
+    distance: "3.8 km away",
+    speciality: "Towing and recovery",
+    vehicle: "AutoAssist Tow Unit",
+    plate: "KA 03 TA 7781",
+  },
+  {
+    id: "AUTO-MECH-104",
+    name: "Imran Khan",
+    phone: "+919711223344",
+    rating: 4.8,
+    eta: "7-11 min",
+    distance: "1.9 km away",
+    speciality: "EV and fuel support",
+    vehicle: "AutoAssist EV Support Van",
+    plate: "TS 09 EV 5521",
+  },
+];
+
+const assignSupport = (serviceType = "", vehicleType = "") => {
+  const key = `${serviceType}-${vehicleType}`.toLowerCase();
+  const index = key.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % mechanicPool.length;
+  return mechanicPool[index];
+};
 // ✅ CREATE SERVICE
 router.post("/create", authMiddleware, async (req, res) => {
   try {
@@ -23,6 +76,8 @@ router.post("/create", authMiddleware, async (req, res) => {
       paymentMethod
     } = req.body;
 
+    const assigned = assignSupport(serviceType, vehicleType);
+
     const newRequest = new Service({
       userId: new mongoose.Types.ObjectId(req.user.id), // 🔥 FIXED
       serviceType,
@@ -37,10 +92,32 @@ router.post("/create", authMiddleware, async (req, res) => {
       detailingType,
       detailingService,
       price,
-      paymentMethod
+      paymentMethod,
+      status: "assigned",
+      mechanicId: assigned.id,
+      assignedMechanic: assigned.name,
+      mechanicPhone: assigned.phone,
+      mechanicRating: assigned.rating,
+      mechanicEta: assigned.eta,
+      mechanicDistance: assigned.distance,
+      mechanicSpeciality: assigned.speciality,
+      assignedSupportVehicle: assigned.vehicle,
+      assignedVehiclePlate: assigned.plate,
+      chatThread: [
+        {
+          sender: "mechanic",
+          message: `Namaste, I am ${assigned.name}. I have been assigned to your ${serviceType} request and I am on the way.`,
+          time: "Just now",
+        },
+      ]
     });
 
     await newRequest.save();
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("requestAssigned", newRequest);
+    }
 
     res.status(201).json({ message: "Created", newRequest });
 

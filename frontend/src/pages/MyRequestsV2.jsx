@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import socket from "../socket";
 import { getMyRequests } from "../services/serviceApi";
 import {
@@ -10,6 +11,7 @@ import {
 } from "../utils/requestUtils";
 
 function MyRequestsV2() {
+  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
 
   const loadRequests = async () => {
@@ -45,9 +47,16 @@ function MyRequestsV2() {
   return (
     <main className="page-shell app-grid">
       <section className="hero-card" style={{ padding: "36px" }}>
-        <span className="eyebrow">Request History</span>
-        <h1 className="section-title">My requests</h1>
-        <p className="section-copy">View all your service requests.</p>
+        <div className="premium-hero">
+          <div>
+            <span className="eyebrow">Request History</span>
+            <h1 className="section-title">My requests</h1>
+            <p className="section-copy">View all your service requests.</p>
+          </div>
+          <button type="button" className="secondary-btn" onClick={() => navigate("/packages")}>
+            Premium Packages
+          </button>
+        </div>
       </section>
 
       <section className="stat-strip">
@@ -70,7 +79,7 @@ function MyRequestsV2() {
           <div className="empty-state">No requests found yet. Once you submit one, it will appear here.</div>
         ) : (
           requests.map((request) => (
-            <article key={request._id} className="list-card">
+            <article key={request._id} className="list-card my-request-card">
               <div
                 style={{
                   display: "flex",

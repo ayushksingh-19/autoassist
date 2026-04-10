@@ -46,7 +46,7 @@ function RegisterScreen() {
       <div className="auth-panel">
         <section className="auth-brand">
           <div style={{ marginTop: "18px", marginBottom: "14px" }}>
-            <BrandLogo variant="dark" size="lg" />
+            <BrandLogo size="lg" />
           </div>
           <h1>Your roadside membership starts here.</h1>
           <p>

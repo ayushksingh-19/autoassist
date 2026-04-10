@@ -202,7 +202,7 @@ function ServiceRequestV2() {
 
             {form.serviceType === "Washing & Cleaning" ? (
               <div className="field">
-                <label htmlFor="washPackage">Cleaning Package</label>
+                <label htmlFor="washPackage">Cleaning Options</label>
                 <input id="washPackage" value={form.washPackage} onChange={setField("washPackage")} />
               </div>
             ) : null}
@@ -414,7 +414,7 @@ function ServiceRequestV2() {
       </section>
 
       <aside className="summary-card">
-        <span className="eyebrow" style={{ color: "#f6f2e9", background: "rgba(255,255,255,0.1)" }}>
+        <span className="eyebrow" style={{ color: "var(--accent-strong)", background: "var(--accent-soft)" }}>
           Booking Snapshot
         </span>
         <h2 style={{ fontFamily: '"Space Grotesk", sans-serif', marginBottom: "8px" }}>
@@ -424,12 +424,8 @@ function ServiceRequestV2() {
 
         <div className="stack" style={{ marginTop: "20px" }}>
           <div>
-            <strong>Package</strong>
-            <p>{form.packageName || form.detailingService || "Standard request"}</p>
-          </div>
-          <div>
             <strong>Estimated total</strong>
-            <p style={{ color: "#fff7ef", fontSize: "1.8rem", fontWeight: 800 }}>
+            <p style={{ color: "var(--accent)", fontSize: "1.8rem", fontWeight: 800 }}>
               Rs {Number(form.price || 0).toLocaleString("en-IN")}
             </p>
           </div>
@@ -457,8 +453,8 @@ function ServiceRequestV2() {
           ) : null}
           {form.serviceType === "Washing & Cleaning" ? (
             <div>
-              <strong>Cleaning package</strong>
-              <p>{form.washPackage || "No wash package selected"}</p>
+              <strong>Cleaning options</strong>
+              <p>{form.washPackage || "No cleaning option selected"}</p>
             </div>
           ) : null}
           {form.serviceType === "Tyre Services" ? (

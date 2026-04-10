@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import socket from "../socket";
 import { getMyRequests } from "../services/serviceApi";
 import { formatCurrency, formatRequestTitle, getRequestStats } from "../utils/requestUtils";
@@ -29,7 +29,36 @@ const getProgress = (status, completedLocally) => {
   return 18;
 };
 
-const getMechanicName = () => "Mike Johnson";
+const fallbackMechanic = {
+  name: "Ravi Sharma",
+  phone: "+919876543210",
+  rating: 4.8,
+  eta: "8-12 min",
+  distance: "2.3 km away",
+  speciality: "Emergency mechanic",
+  vehicle: "AutoAssist Rapid Van",
+  plate: "MH 12 AA 2045",
+};
+
+const getAssignedMechanic = (request = {}) => ({
+  name: request.assignedMechanic || fallbackMechanic.name,
+  phone: request.mechanicPhone || fallbackMechanic.phone,
+  rating: request.mechanicRating || fallbackMechanic.rating,
+  eta: request.mechanicEta || fallbackMechanic.eta,
+  distance: request.mechanicDistance || fallbackMechanic.distance,
+  speciality: request.mechanicSpeciality || fallbackMechanic.speciality,
+  vehicle: request.assignedSupportVehicle || fallbackMechanic.vehicle,
+  plate: request.assignedVehiclePlate || fallbackMechanic.plate,
+  chatThread: request.chatThread?.length
+    ? request.chatThread
+    : [
+        {
+          sender: "mechanic",
+          message: `Namaste, I am ${request.assignedMechanic || fallbackMechanic.name}. I have been assigned and I am on the way.`,
+          time: "Just now",
+        },
+      ],
+});
 
 const getTimeline = (completedLocally) => {
   if (completedLocally) {
@@ -58,6 +87,9 @@ function ActiveRequestsV2() {
   const [comments, setComments] = useState("");
   const [quickTags, setQuickTags] = useState([]);
   const [cardForm, setCardForm] = useState({ number: "", expiry: "", cvv: "" });
+  const [chatRequest, setChatRequest] = useState(null);
+  const [chatDraft, setChatDraft] = useState("");
+  const [localChats, setLocalChats] = useState({});
 
   const loadRequests = async () => {
     try {
@@ -158,6 +190,38 @@ function ActiveRequestsV2() {
     );
   };
 
+  const openChat = (request) => {
+    const mechanic = getAssignedMechanic(request);
+    setChatRequest({ ...request, mechanic });
+    setLocalChats((current) => ({
+      ...current,
+      [request._id]: current[request._id] || mechanic.chatThread,
+    }));
+  };
+
+  const sendChatMessage = () => {
+    if (!chatRequest || !chatDraft.trim()) {
+      return;
+    }
+
+    const userMessage = {
+      sender: "user",
+      message: chatDraft.trim(),
+      time: "Now",
+    };
+    const mechanicReply = {
+      sender: "mechanic",
+      message: "Received. I am checking your details and will call if I need anything else.",
+      time: "Now",
+    };
+
+    setLocalChats((current) => ({
+      ...current,
+      [chatRequest._id]: [...(current[chatRequest._id] || []), userMessage, mechanicReply],
+    }));
+    setChatDraft("");
+  };
+
   return (
     <>
       <main className="page-shell app-grid active-page-shell">
@@ -177,10 +241,10 @@ function ActiveRequestsV2() {
                 {displayRequests.map((request) => {
                   const localStatus = requestStages[request._id];
                   const isCompleted = localStatus === "completed";
-                  const progress = getProgress(request.status, isCompleted);
                   const title = formatRequestTitle(request);
                   const amount = request.price || 75;
                   const timeline = getTimeline(isCompleted);
+                  const mechanic = getAssignedMechanic(request);
 
                   return (
                     <article
@@ -196,7 +260,7 @@ function ActiveRequestsV2() {
                           <div>
                             <h2 style={{ margin: "0 0 4px", fontSize: "1.15rem" }}>{title}</h2>
                             <p className="section-copy" style={{ fontSize: "0.95rem" }}>
-                              {request.vehicleName || request.vehicleModel || "honda12345"}
+                              {request.vehicleName || request.vehicleModel || "MH 12 AB 1234"}
                             </p>
                           </div>
                         </div>
@@ -224,12 +288,16 @@ function ActiveRequestsV2() {
 
                       <div className="active-mechanic-box">
                         <div className="active-mechanic-head">
-                          <p style={{ margin: 0, fontWeight: 700 }}>Mechanic Working</p>
+                          <p style={{ margin: 0, fontWeight: 700 }}>Mechanic Assigned</p>
                           <div className="active-mechanic-actions">
-                            <button type="button" className="mini-action-btn">
+                            <button
+                              type="button"
+                              className="mini-action-btn"
+                              onClick={() => window.open(`tel:${mechanic.phone}`)}
+                            >
                               Call
                             </button>
-                            <button type="button" className="mini-action-btn">
+                            <button type="button" className="mini-action-btn" onClick={() => openChat(request)}>
                               Chat
                             </button>
                           </div>
@@ -239,10 +307,18 @@ function ActiveRequestsV2() {
                           <div className="active-mechanic-profile">
                             <div className="active-avatar">M</div>
                             <div>
-                              <p style={{ margin: 0, fontWeight: 700 }}>{getMechanicName()}</p>
-                              <p style={{ margin: "4px 0 0", color: "var(--muted)", fontSize: "0.92rem" }}>4.8</p>
+                              <p style={{ margin: 0, fontWeight: 700 }}>{mechanic.name}</p>
+                              <p style={{ margin: "4px 0 0", color: "var(--muted)", fontSize: "0.92rem" }}>
+                                {mechanic.rating} rating - {mechanic.eta}
+                              </p>
                             </div>
                           </div>
+                        </div>
+
+                        <div className="active-assignment-strip">
+                          <span>{mechanic.vehicle}</span>
+                          <strong>{mechanic.plate}</strong>
+                          <span>{mechanic.distance}</span>
                         </div>
 
                         {!isCompleted ? (
@@ -316,7 +392,7 @@ function ActiveRequestsV2() {
 
                     <div style={{ marginTop: "12px" }}>
                       <div className="active-tracking-title-row">
-                        <span className="active-tracking-title">{getMechanicName()} is on the way</span>
+                        <span className="active-tracking-title">{getAssignedMechanic(trackingRequest).name} is on the way</span>
                         <span className="active-tracking-time">14 min</span>
                       </div>
 
@@ -354,7 +430,7 @@ function ActiveRequestsV2() {
                     </div>
                     <div className="active-stat-line">
                       <span>Money Saved</span>
-                      <strong style={{ color: "#16a34a" }}>$248</strong>
+                      <strong style={{ color: "var(--accent)" }}>Rs 20,500</strong>
                     </div>
                   </div>
                 </div>
@@ -397,7 +473,7 @@ function ActiveRequestsV2() {
                 onClick={() => setSelectedMethod("wallet")}
               >
                 <span>AutoAssist Wallet</span>
-                <strong style={{ color: "#16a34a" }}>$150.00</strong>
+                <strong style={{ color: "var(--accent)" }}>Rs 12,500</strong>
               </button>
 
               <button
@@ -474,7 +550,7 @@ function ActiveRequestsV2() {
             </button>
             <h2 style={{ margin: 0 }}>Rate Your Experience</h2>
             <p className="section-copy" style={{ marginTop: "4px" }}>
-              How was your service with {getMechanicName()}?
+              How was your service with {getAssignedMechanic(requests.find((request) => request._id === reviewModalFor) || {}).name}?
             </p>
 
             <div className="active-review-service">
@@ -526,6 +602,57 @@ function ActiveRequestsV2() {
               </button>
               <button type="button" className="primary-btn" onClick={() => handleReviewSubmit(reviewModalFor)}>
                 Submit Review
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {chatRequest ? (
+        <div className="active-modal-backdrop" onClick={() => setChatRequest(null)}>
+          <div className="active-modal-card active-chat-card" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="active-modal-close" onClick={() => setChatRequest(null)}>
+              x
+            </button>
+            <div className="active-chat-head">
+              <div className="active-avatar">M</div>
+              <div>
+                <h2 style={{ margin: 0 }}>{chatRequest.mechanic.name}</h2>
+                <p className="section-copy">
+                  {chatRequest.mechanic.vehicle} - {chatRequest.mechanic.plate}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="mini-action-btn"
+                onClick={() => window.open(`tel:${chatRequest.mechanic.phone}`)}
+              >
+                Call
+              </button>
+            </div>
+
+            <div className="active-chat-thread">
+              {(localChats[chatRequest._id] || chatRequest.mechanic.chatThread).map((message, index) => (
+                <div key={`${message.sender}-${index}`} className={`active-chat-bubble ${message.sender}`}>
+                  <p>{message.message}</p>
+                  <span>{message.time}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="active-chat-input-row">
+              <input
+                value={chatDraft}
+                onChange={(event) => setChatDraft(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    sendChatMessage();
+                  }
+                }}
+                placeholder="Type your message..."
+              />
+              <button type="button" className="primary-btn" onClick={sendChatMessage}>
+                Send
               </button>
             </div>
           </div>
