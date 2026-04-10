@@ -1,64 +1,99 @@
 const express = require("express");
-const router = express.Router();
-const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const env = require("../config/env");
 
-// ✅ REGISTER
-router.post("/register", async (req, res) => {
+const router = express.Router();
+
+const normalizeEmail = (email = "") => email.trim().toLowerCase();
+
+const sanitizeUser = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+});
+
+const isStrongEnoughPassword = (password = "") =>
+  password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+
+router.post("/register", async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const name = String(req.body.name || "").trim();
+    const email = normalizeEmail(req.body.email);
+    const password = String(req.body.password || "");
 
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email, and password are required." });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Please enter a valid email address." });
+    }
 
-    const user = new User({
+    if (!isStrongEnoughPassword(password)) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters and include letters and numbers.",
+      });
+    }
+
+    const userExists = await User.exists({ email });
+    if (userExists) {
+      return res.status(409).json({ message: "User already exists." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS || 12));
+
+    const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
-    await user.save();
+    return res.status(201).json({
+      message: "User registered successfully.",
+      user: sanitizeUser(user),
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "User already exists." });
+    }
 
-    res.json({ message: "User registered successfully ✅" });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return next(error);
   }
 });
 
-// ✅ LOGIN
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const password = String(req.body.password || "");
 
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required." });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const token = jwt.sign(
-  { id: user._id, role: user.role }, // 👈 ADD ROLE HERE
-  "secretkey",
-  { expiresIn: "1d" }
-);
-
-    res.json({
-      token,
-      role: user.role
+    const token = jwt.sign({ id: user._id, role: user.role }, env.jwtSecret, {
+      expiresIn: env.jwtExpiresIn,
     });
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.json({
+      token,
+      role: user.role,
+      user: sanitizeUser(user),
+    });
+  } catch (error) {
+    return next(error);
   }
 });
 

@@ -7,7 +7,7 @@ function WalletV2() {
   const [selected, setSelected] = React.useState(null);
   const [balance, setBalance] = React.useState(0);
   const [transactions, setTransactions] = React.useState([]);
-  const [card, setCard] = React.useState("**** 4242");
+  const card = "**** 4242";
   const [visible, setVisible] = React.useState(4);
 
   React.useEffect(() => {

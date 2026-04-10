@@ -1,8 +1,10 @@
 const express = require("express");
-const router = express.Router();
+const mongoose = require("mongoose");
 const Service = require("../models/ServiceRequest");
 const authMiddleware = require("../middlewares/auth");
-const mongoose = require("mongoose");
+const roleMiddleware = require("../middlewares/role");
+
+const router = express.Router();
 
 const mechanicPool = [
   {
@@ -51,48 +53,84 @@ const mechanicPool = [
   },
 ];
 
+const allowedServiceTypes = new Set([
+  "Mechanic",
+  "EV Charging",
+  "Fuel Delivery",
+  "Roadside Repair",
+  "Washing & Cleaning",
+  "Tyre Services",
+  "Detailing",
+  "SOS Emergency",
+]);
+
+const sanitizeString = (value, maxLength = 500) =>
+  String(value || "")
+    .trim()
+    .slice(0, maxLength);
+
+const toNumberOrUndefined = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const assignSupport = (serviceType = "", vehicleType = "") => {
   const key = `${serviceType}-${vehicleType}`.toLowerCase();
   const index = key.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % mechanicPool.length;
   return mechanicPool[index];
 };
-// ✅ CREATE SERVICE
-router.post("/create", authMiddleware, async (req, res) => {
-  try {
 
-    const {
-      serviceType,
-      vehicleType,
-      fuelType,
-      problem,
-      location,
-      lat,
-      lng,
-      date,
-      timeSlot,
-      detailingType,
-      detailingService,
-      price,
-      paymentMethod
-    } = req.body;
+const getRequestForUser = async (requestId, user) => {
+  if (!mongoose.Types.ObjectId.isValid(requestId)) {
+    return null;
+  }
+
+  const request = await Service.findById(requestId);
+  if (!request) {
+    return null;
+  }
+
+  const isOwner = String(request.userId) === String(user.id);
+  const isMechanic = user.role === "mechanic";
+
+  if (!isOwner && !isMechanic) {
+    return "forbidden";
+  }
+
+  return request;
+};
+
+router.post("/create", authMiddleware, async (req, res, next) => {
+  try {
+    const serviceType = sanitizeString(req.body.serviceType, 80);
+    const vehicleType = sanitizeString(req.body.vehicleType || req.body.vehicleModel || "General vehicle", 80);
+
+    if (!allowedServiceTypes.has(serviceType)) {
+      return res.status(400).json({ message: "Invalid service type." });
+    }
+
+    const location = sanitizeString(req.body.location, 500);
+    if (!location) {
+      return res.status(400).json({ message: "Location is required." });
+    }
 
     const assigned = assignSupport(serviceType, vehicleType);
 
-    const newRequest = new Service({
-      userId: new mongoose.Types.ObjectId(req.user.id), // 🔥 FIXED
+    const newRequest = await Service.create({
+      userId: req.user.id,
       serviceType,
       vehicleType,
-      fuelType,
-      problem,
+      fuelType: serviceType === "Fuel Delivery" ? sanitizeString(req.body.fuelType, 40) : "",
+      problem: sanitizeString(req.body.problem, 2000),
       location,
-      lat,
-      lng,
-      date,
-      timeSlot,
-      detailingType,
-      detailingService,
-      price,
-      paymentMethod,
+      lat: toNumberOrUndefined(req.body.lat),
+      lng: toNumberOrUndefined(req.body.lng),
+      date: sanitizeString(req.body.date, 40),
+      timeSlot: sanitizeString(req.body.timeSlot, 80),
+      detailingType: sanitizeString(req.body.detailingType, 100),
+      detailingService: sanitizeString(req.body.detailingService, 1000),
+      price: Math.max(0, toNumberOrUndefined(req.body.price) || 0),
+      paymentMethod: sanitizeString(req.body.paymentMethod, 80),
       status: "assigned",
       mechanicId: assigned.id,
       assignedMechanic: assigned.name,
@@ -109,49 +147,35 @@ router.post("/create", authMiddleware, async (req, res) => {
           message: `Namaste, I am ${assigned.name}. I have been assigned to your ${serviceType} request and I am on the way.`,
           time: "Just now",
         },
-      ]
+      ],
     });
-
-    await newRequest.save();
 
     const io = req.app.get("io");
     if (io) {
       io.emit("requestAssigned", newRequest);
     }
 
-    res.status(201).json({ message: "Created", newRequest });
-
+    return res.status(201).json({ message: "Created", newRequest });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error creating request" });
+    return next(error);
   }
 });
-// 🔥 GET USER REQUESTS (FINAL FIXED)
-router.get("/my", authMiddleware, async (req, res) => {
+
+router.get("/my", authMiddleware, async (req, res, next) => {
   try {
-
-    const userId = new mongoose.Types.ObjectId(req.user.id);
-
-    const requests = await Service.find({ userId });
-
-    console.log("TOKEN USER:", req.user.id);
-    console.log("FOUND REQUESTS:", requests.length);
-
-    res.json(requests);
-
+    const requests = await Service.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    return res.json(requests);
   } catch (error) {
-    console.error("MY REQUEST ERROR:", error);
-    res.status(500).json({ message: "Error fetching requests" });
+    return next(error);
   }
 });
-// ✅ ACCEPT REQUEST
-router.put("/accept/:id", authMiddleware, async (req, res) => {
-  try {
 
-    const request = await Service.findById(req.params.id);
+router.put("/accept/:id", authMiddleware, roleMiddleware("mechanic"), async (req, res, next) => {
+  try {
+    const request = await getRequestForUser(req.params.id, req.user);
 
     if (!request) {
-      return res.status(404).json({ message: "Request not found" });
+      return res.status(404).json({ message: "Request not found." });
     }
 
     request.status = "accepted";
@@ -160,81 +184,90 @@ router.put("/accept/:id", authMiddleware, async (req, res) => {
     await request.save();
 
     const io = req.app.get("io");
-    io.emit("requestUpdated", request);
+    if (io) {
+      io.emit("requestUpdated", request);
+    }
 
-    res.json({ message: "Request accepted", request });
-
+    return res.json({ message: "Request accepted", request });
   } catch (error) {
-    console.error("ACCEPT ERROR:", error);
-    res.status(500).json({ message: "Error updating request" });
+    return next(error);
   }
 });
 
-
-// ✅ GET ALL REQUESTS (NEARBY)
-router.get("/all", authMiddleware, async (req, res) => {
+router.get("/all", authMiddleware, roleMiddleware("mechanic"), async (req, res, next) => {
   try {
+    const mechanicLat = Number(req.query.lat);
+    const mechanicLng = Number(req.query.lng);
 
-    const mechanicLat = parseFloat(req.query.lat);
-    const mechanicLng = parseFloat(req.query.lng);
+    if (!Number.isFinite(mechanicLat) || !Number.isFinite(mechanicLng)) {
+      return res.status(400).json({ message: "Valid latitude and longitude are required." });
+    }
 
-    const services = await Service.find();
+    const services = await Service.find({ status: { $in: ["assigned", "accepted"] } }).sort({ createdAt: -1 });
 
-    const nearby = services.filter((s) => {
-
-      if (!s.lat || !s.lng) return false;
+    const nearby = services.filter((service) => {
+      if (!Number.isFinite(service.lat) || !Number.isFinite(service.lng)) {
+        return false;
+      }
 
       const distance = Math.sqrt(
-        Math.pow(s.lat - mechanicLat, 2) +
-        Math.pow(s.lng - mechanicLng, 2)
+        Math.pow(service.lat - mechanicLat, 2) + Math.pow(service.lng - mechanicLng, 2)
       );
 
       return distance < 0.1;
     });
 
-    res.json(nearby);
-
+    return res.json(nearby);
   } catch (error) {
-    console.error("FETCH ERROR:", error);
-    res.status(500).json({ message: "Error fetching services" });
+    return next(error);
   }
 });
 
-
-// ✅ COMPLETE REQUEST
-router.put("/complete/:id", authMiddleware, async (req, res) => {
+router.put("/complete/:id", authMiddleware, async (req, res, next) => {
   try {
-
-    const request = await Service.findById(req.params.id);
+    const request = await getRequestForUser(req.params.id, req.user);
 
     if (!request) {
-      return res.status(404).json({ message: "Request not found" });
+      return res.status(404).json({ message: "Request not found." });
+    }
+
+    if (request === "forbidden") {
+      return res.status(403).json({ message: "Access denied." });
     }
 
     request.status = "completed";
-
     await request.save();
 
     const io = req.app.get("io");
-    io.emit("requestUpdated", request);
+    if (io) {
+      io.emit("requestUpdated", request);
+    }
 
-    res.json({ message: "Service completed", request });
-
+    return res.json({ message: "Service completed", request });
   } catch (error) {
-    console.error("COMPLETE ERROR:", error);
-    res.status(500).json({ message: "Error completing request" });
+    return next(error);
   }
 });
-// ❌ CANCEL REQUEST
-router.delete("/:id", authMiddleware, async (req, res) => {
+
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
+    const request = await getRequestForUser(req.params.id, req.user);
 
-    await Service.findByIdAndDelete(req.params.id);
+    if (!request) {
+      return res.status(404).json({ message: "Request not found." });
+    }
 
-    res.json({ message: "Request cancelled" });
+    if (request === "forbidden") {
+      return res.status(403).json({ message: "Access denied." });
+    }
 
+    request.status = "cancelled";
+    await request.save();
+
+    return res.json({ message: "Request cancelled", request });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting request" });
+    return next(error);
   }
 });
+
 module.exports = router;

@@ -1,8 +1,15 @@
-module.exports = (err, req, res, next) => {
-  console.error("ERROR:", err.message);
+const env = require("../config/env");
 
-  res.status(500).json({
+module.exports = (err, req, res, next) => {
+  const statusCode = err.statusCode || err.status || 500;
+
+  if (!env.isProduction) {
+    console.error("ERROR:", err);
+  }
+
+  res.status(statusCode).json({
     success: false,
-    message: err.message || "Internal Server Error",
+    message: statusCode >= 500 ? "Internal server error." : err.message,
+    ...(env.isProduction ? {} : { stack: err.stack }),
   });
 };

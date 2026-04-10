@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // ✅ FIXED
+import { useNavigate } from "react-router-dom";
 
 function TyreServicePage() {
-     const location = useLocation();
-      const vehicleType = location.state?.vehicleType;
       const navigate = useNavigate(); 
   const [selectedPackage, setSelectedPackage] = useState("Basic");
   const [selectedExtras, setSelectedExtras] = useState([]);
@@ -19,7 +17,7 @@ function TyreServicePage() {
     time: new Date().toLocaleTimeString(),
   };
 
-  // Save to localStorage (simple backend)
+  // Keep the selected tyre service available across the booking flow.
   const existing = JSON.parse(localStorage.getItem("requests")) || [];
   existing.push(requestData);
   localStorage.setItem("requests", JSON.stringify(existing));
@@ -415,55 +413,6 @@ const mainBtn = {
 const dateTimeBox = {
   display: "flex",
   gap: "15px",
-  marginTop: "10px",
-};
-const rightCard = {
-  flex: 1,
-  background: "#fff",
-  padding: "20px",
-  borderRadius: "12px",
-};
-
-const progressBar = {
-  width: "100%",
-  height: "8px",
-  background: "#ddd",
-  borderRadius: "5px",
-  marginTop: "10px",
-};
-
-const progressFill = {
-  width: "30%",
-  height: "100%",
-  background: "#2563eb",
-  borderRadius: "5px",
-};
-
-const activeBtn = {
-  background: "#bbf7d0",
-  border: "none",
-  padding: "6px 10px",
-  borderRadius: "6px",
-};
-
-const inactiveBtn = {
-  background: "#e5e7eb",
-  border: "none",
-  padding: "6px 10px",
-  borderRadius: "6px",
-};
-
-const statsCard = {
-  marginTop: "20px",
-  background: "#fff",
-  padding: "20px",
-  borderRadius: "12px",
-  width: "300px",
-};
-
-const statsRow = {
-  display: "flex",
-  justifyContent: "space-between",
   marginTop: "10px",
 };
 export default TyreServicePage;

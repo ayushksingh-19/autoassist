@@ -1,22 +1,22 @@
 const jwt = require("jsonwebtoken");
+const env = require("../config/env");
 
 module.exports = (req, res, next) => {
   try {
-    const authHeader = req.header("Authorization");
+    const authHeader = req.header("Authorization") || "";
 
-    if (!authHeader) {
-      return res.status(401).json({ message: "No token" });
+    if (!authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Authentication required." });
     }
 
-    const token = authHeader.replace("Bearer ", "");
+    const token = authHeader.slice(7).trim();
+    if (!token) {
+      return res.status(401).json({ message: "Authentication required." });
+    }
 
-    const decoded = jwt.verify(token, "secretkey");
-
-    req.user = decoded;
-
-    next();
-
+    req.user = jwt.verify(token, env.jwtSecret);
+    return next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    return res.status(401).json({ message: "Invalid or expired token." });
   }
 };

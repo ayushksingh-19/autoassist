@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
+const env = require("./env");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(env.mongoUri, {
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: Number(process.env.MONGO_MAX_POOL_SIZE || 20),
+    });
 
-    console.log("MongoDB connected ✅");
+    console.log("MongoDB connected");
   } catch (error) {
     console.error("DB connection error:", error.message);
     process.exit(1);
