@@ -1,4 +1,4 @@
-# AutoAssist
+<img width="252" height="90" alt="image" src="https://github.com/user-attachments/assets/9bc3228b-a0f7-4b51-a04f-aeb45fc2a7ec" />
 
 AutoAssist is a full-stack roadside assistance web app for booking vehicle help, tracking service requests, managing user accounts, and coordinating mechanics. It supports car, bike, EV, fuel, tyre, towing, emergency, wallet, profile, and premium package flows from one responsive interface.
 
@@ -6,9 +6,7 @@ AutoAssist is a full-stack roadside assistance web app for booking vehicle help,
 
 [Open AutoAssist](https://autoassist-frontend.onrender.com/)
 
-Backend health check:
 
-[https://autoassist-backend-z6mz.onrender.com/api/health](https://autoassist-backend-z6mz.onrender.com/api/health)
 
 ## Features
 
