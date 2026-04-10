@@ -2,6 +2,15 @@ import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MapComponent from "../components/MapComponent";
 import { createRequest } from "../services/serviceApi";
+import {
+  calculateEvChargingTotal,
+  calculateFuelDeliveryTotal,
+  getEvBaseVisitPrice,
+  getEvCapacityPrice,
+  getFuelDeliveryFee,
+  getFuelRatePerLitre,
+  parseNumericInput,
+} from "../utils/requestUtils";
 
 function ServiceRequestV2() {
   const navigate = useNavigate();
@@ -45,6 +54,19 @@ function ServiceRequestV2() {
     price: state.price || state.packagePrice || 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEvCharging = form.serviceType === "EV Charging";
+  const isFuelDelivery = form.serviceType === "Fuel Delivery";
+  const calculatedPrice = useMemo(() => {
+    if (isEvCharging) {
+      return calculateEvChargingTotal(form.chargerCapacity, form.vehicleType);
+    }
+
+    if (isFuelDelivery) {
+      return calculateFuelDeliveryTotal(form.fuelType, form.fuelQuantity, form.vehicleType);
+    }
+
+    return Number(form.price || 0);
+  }, [form.chargerCapacity, form.fuelQuantity, form.fuelType, form.price, form.vehicleType, isEvCharging, isFuelDelivery]);
 
   const requestsForMap = useMemo(() => {
     if (!form.lat || !form.lng) {
@@ -103,7 +125,7 @@ function ServiceRequestV2() {
       await createRequest({
         serviceType: form.serviceType,
         vehicleType: form.vehicleType || form.vehicleModel || "General vehicle",
-        fuelType: form.fuelType,
+        fuelType: isFuelDelivery ? form.fuelType : "",
         problem: form.problem,
         location: form.location,
         lat: form.lat,
@@ -111,7 +133,7 @@ function ServiceRequestV2() {
         date: form.date,
         timeSlot: form.timeSlot,
         detailingService: form.detailingService || form.packageName,
-        price: form.price,
+        price: calculatedPrice,
         paymentMethod: form.paymentMethod,
       });
 
@@ -128,10 +150,10 @@ function ServiceRequestV2() {
       <section className="app-grid">
         <div className="hero-card" style={{ padding: "32px" }}>
           <span className="eyebrow">{serviceLabel || "Final Confirmation"}</span>
-          <h1 className="section-title">Send the request to the backend with all service details ready.</h1>
+          <h1 className="section-title">Confirm your request and dispatch support.</h1>
           <p className="section-copy">
-            This is the last step before dispatch. Everything here gets posted to your live service
-            request history so you can track it from the active requests screen.
+            This is the last step before dispatch. Your request will appear in Live Requests with
+            the assigned mechanic, support vehicle, call, and chat options in one place.
           </p>
         </div>
 
@@ -150,10 +172,12 @@ function ServiceRequestV2() {
             </div>
 
             <div className="grid-two">
-              <div className="field">
-                <label htmlFor="fuelType">Fuel Type</label>
-                <input id="fuelType" value={form.fuelType} onChange={setField("fuelType")} />
-              </div>
+              {isFuelDelivery ? (
+                <div className="field">
+                  <label htmlFor="fuelType">Fuel Type</label>
+                  <input id="fuelType" value={form.fuelType} onChange={setField("fuelType")} />
+                </div>
+              ) : null}
 
               <div className="field">
                 <label htmlFor="paymentMethod">Payment Method</label>
@@ -165,9 +189,9 @@ function ServiceRequestV2() {
               </div>
             </div>
 
-            {form.serviceType === "EV Charging" || form.serviceType === "Fuel Delivery" ? (
+            {isEvCharging || isFuelDelivery ? (
               <div className="grid-two">
-                {form.serviceType === "EV Charging" ? (
+                {isEvCharging ? (
                   <div className="field">
                     <label htmlFor="chargerCapacity">Charger Type / Capacity (kW)</label>
                     <input
@@ -402,9 +426,6 @@ function ServiceRequestV2() {
             ) : null}
 
             <div className="inline-actions">
-              <button type="button" className="secondary-btn" onClick={() => navigate(-1)}>
-                Back
-              </button>
               <button type="submit" className="primary-btn" disabled={isSubmitting}>
                 {isSubmitting ? "Creating Request..." : "Submit Request"}
               </button>
@@ -426,24 +447,56 @@ function ServiceRequestV2() {
           <div>
             <strong>Estimated total</strong>
             <p style={{ color: "var(--accent)", fontSize: "1.8rem", fontWeight: 800 }}>
-              Rs {Number(form.price || 0).toLocaleString("en-IN")}
+              Rs {calculatedPrice.toLocaleString("en-IN")}
             </p>
           </div>
           <div>
             <strong>Timing</strong>
             <p>{form.timeSlot || "ASAP dispatch"}</p>
           </div>
-          {form.serviceType === "EV Charging" ? (
-            <div>
-              <strong>Charger</strong>
-              <p>{form.chargerCapacity || "Not specified yet"}</p>
-            </div>
+          {isEvCharging ? (
+            <>
+              <div>
+                <strong>EV visit fee</strong>
+                <p>Rs {getEvBaseVisitPrice(form.vehicleType).toLocaleString("en-IN")}</p>
+              </div>
+              <div>
+                <strong>Charger capacity</strong>
+                <p>{form.chargerCapacity || "Not specified yet"}</p>
+              </div>
+              <div>
+                <strong>Capacity estimate</strong>
+                <p>
+                  {getEvCapacityPrice(form.chargerCapacity, form.vehicleType)
+                    ? `Rs ${getEvCapacityPrice(form.chargerCapacity, form.vehicleType).toLocaleString("en-IN")}`
+                    : "Enter charger kW"}
+                </p>
+              </div>
+            </>
           ) : null}
-          {form.serviceType === "Fuel Delivery" ? (
-            <div>
-              <strong>Fuel quantity</strong>
-              <p>{form.fuelQuantity ? `${form.fuelQuantity} litres` : "Not specified yet"}</p>
-            </div>
+          {isFuelDelivery ? (
+            <>
+              <div>
+                <strong>Fuel type</strong>
+                <p>{form.fuelType || "Not selected yet"}</p>
+              </div>
+              <div>
+                <strong>Delivery fee</strong>
+                <p>Rs {getFuelDeliveryFee(form.vehicleType).toLocaleString("en-IN")}</p>
+              </div>
+              <div>
+                <strong>Fuel quantity</strong>
+                <p>{form.fuelQuantity ? `${parseNumericInput(form.fuelQuantity)} litres` : "Not specified yet"}</p>
+              </div>
+              <div>
+                <strong>Fuel rate</strong>
+                <p>
+                  {getFuelRatePerLitre(form.fuelType)
+                    ? `Rs ${getFuelRatePerLitre(form.fuelType).toLocaleString("en-IN")} per litre`
+                    : "Select fuel type"}
+                </p>
+              </div>
+            </>
           ) : null}
           {form.serviceType === "Roadside Repair" ? (
             <div>

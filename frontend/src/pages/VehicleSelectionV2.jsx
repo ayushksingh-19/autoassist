@@ -9,15 +9,6 @@ function VehicleSelectionV2() {
   return (
     <main className="page-shell app-grid">
       <section className="hero-card" style={{ padding: "32px" }}>
-        <button
-          type="button"
-          className="secondary-btn"
-          onClick={() => navigate(-1)}
-          style={{ marginBottom: "18px", width: "fit-content" }}
-        >
-          Back
-        </button>
-
         <span className="eyebrow">Vehicle Selection</span>
         <h1 className="section-title">Continue this request as a car service.</h1>
         <p className="section-copy" style={{ maxWidth: "680px" }}>
@@ -45,10 +36,7 @@ function VehicleSelectionV2() {
             background: "linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 255, 0.96))",
           }}
         >
-          <div
-            className="feature-icon"
-            style={{ background: "linear-gradient(135deg, #2f6fed, #1f5bd0)" }}
-          >
+          <div className="feature-icon">
             C
           </div>
           <h2 className="feature-title">Car</h2>

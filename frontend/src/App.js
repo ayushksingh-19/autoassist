@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
 
 import VehicleSelectionV2 from "./pages/VehicleSelectionV2";
@@ -34,33 +33,6 @@ import PremiumPackagesPage from "./pages/PremiumPackagesPage";
 import FloatingCallButton from "./components/FloatingCallButton";
 import EmergencyCallPage from "./pages/EmergencyCallPage";
 
-function GlobalBackButton() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const hideBackButton =
-    location.pathname === "/" ||
-    location.pathname === "/explore" ||
-    location.pathname === "/login" ||
-    location.pathname === "/register";
-
-  if (hideBackButton) {
-    return null;
-  }
-
-  return (
-    <div className="global-back-wrap">
-      <button
-        type="button"
-        className="secondary-btn global-back-btn"
-        onClick={() => navigate(-1)}
-      >
-        Back
-      </button>
-    </div>
-  );
-}
-
 function Layout({ children }) {
   const location = useLocation();
 
@@ -74,7 +46,6 @@ function Layout({ children }) {
     <div className="app-shell">
       <ScrollReveal />
       {!hideNavbar && <AppNavbar />}
-      <GlobalBackButton />
       {children}
       <FloatingCallButton />
     </div>

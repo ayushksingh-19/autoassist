@@ -5,13 +5,11 @@ const fuelOptions = [
   {
     title: "Petrol",
     description: "Choose petrol delivery and continue with nearby fuel pump support.",
-    accent: "linear-gradient(135deg, #2f6fed, #1f5bd0)",
     fuelType: "Petrol",
   },
   {
     title: "Diesel",
     description: "Choose diesel delivery and continue with nearby fuel pump support.",
-    accent: "linear-gradient(135deg, #607086, #445166)",
     fuelType: "Diesel",
   },
 ];
@@ -36,15 +34,6 @@ function FuelSelectionV2() {
   return (
     <main className="page-shell app-grid">
       <section className="hero-card" style={{ padding: "32px" }}>
-        <button
-          type="button"
-          className="secondary-btn"
-          onClick={() => navigate(-1)}
-          style={{ marginBottom: "18px", width: "fit-content" }}
-        >
-          Back
-        </button>
-
         <span className="eyebrow">Fuel Delivery</span>
         <h1 className="section-title">Choose your fuel type</h1>
         <p className="section-copy">Continue with fuel delivery or check nearby fuel pumps first.</p>
@@ -112,7 +101,7 @@ function FuelSelectionV2() {
               }
             }}
           >
-            <div className="feature-icon" style={{ background: option.accent }}>
+            <div className="feature-icon">
               {option.title[0]}
             </div>
             <h2 className="feature-title">{option.title}</h2>

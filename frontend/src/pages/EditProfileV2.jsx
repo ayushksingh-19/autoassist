@@ -44,14 +44,6 @@ function EditProfileV2() {
   return (
     <main className="page-shell app-grid">
       <section className="hero-card" style={{ padding: "36px" }}>
-        <button
-          type="button"
-          className="secondary-btn"
-          onClick={() => navigate(-1)}
-          style={{ width: "fit-content", marginBottom: "18px" }}
-        >
-          Back to Profile
-        </button>
         <span className="eyebrow">Edit Profile</span>
         <h1 className="section-title">Edit profile</h1>
         <p className="section-copy">Update personal details, vehicles, and addresses.</p>

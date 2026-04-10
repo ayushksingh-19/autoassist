@@ -49,8 +49,8 @@ function LoginScreen() {
               <p>Faster dispatch visibility for emergency roadside situations.</p>
             </div>
             <div className="auth-metric">
-              <strong>Live backend sync</strong>
-              <p>Requests and status updates stay tied to the real API instead of local placeholders.</p>
+              <strong>Live request sync</strong>
+              <p>Requests, status updates, assigned mechanics, calls, and chats stay connected.</p>
             </div>
           </div>
         </section>

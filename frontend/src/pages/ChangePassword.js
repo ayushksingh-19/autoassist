@@ -3,111 +3,79 @@ import { useNavigate } from "react-router-dom";
 
 function ChangePassword() {
   const navigate = useNavigate();
-
   const [form, setForm] = useState({
     current: "",
     newPass: "",
     confirm: "",
-    logoutAll: false
+    logoutAll: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm({
-      ...form,
-      [name]: type === "checkbox" ? checked : value
-    });
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setForm((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = () => {
     if (form.newPass !== form.confirm) {
-      alert("Passwords do not match ❌");
+      alert("Passwords do not match.");
       return;
     }
 
     if (form.newPass.length < 6) {
-      alert("Password must be at least 6 characters");
+      alert("Password must be at least 6 characters.");
       return;
     }
 
-    alert("Password Changed ✅");
+    alert("Password changed.");
     navigate("/profile");
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
-
-      {/* 🔙 BACK */}
-      <button onClick={() => navigate(-1)} className="mb-4 text-lg">
-        ← Change Password
-      </button>
-
-      <div className="bg-white rounded-2xl p-5 shadow-md">
-
-        <h2 className="text-xl font-bold mb-2">Change password</h2>
-
-        <p className="text-gray-500 text-sm mb-4">
-          Your password must be at least 6 characters and include a mix of letters, numbers and symbols.
+    <main className="page-shell app-grid">
+      <section className="hero-card" style={{ padding: "36px" }}>
+        <span className="eyebrow">Security</span>
+        <h1 className="section-title">Change password</h1>
+        <p className="section-copy">
+          Update your account password using the same clean AutoAssist theme.
         </p>
+      </section>
 
-        {/* CURRENT */}
-        <input
-          type="password"
-          name="current"
-          placeholder="Current password"
-          className="input-box mb-3"
-          onChange={handleChange}
-        />
+      <section className="surface-card" style={{ padding: "28px" }}>
+        <div className="stack">
+          <div className="field">
+            <label htmlFor="current">Current password</label>
+            <input id="current" type="password" name="current" onChange={handleChange} />
+          </div>
 
-        {/* NEW */}
-        <input
-          type="password"
-          name="newPass"
-          placeholder="New password"
-          className="input-box mb-3"
-          onChange={handleChange}
-        />
+          <div className="field">
+            <label htmlFor="newPass">New password</label>
+            <input id="newPass" type="password" name="newPass" onChange={handleChange} />
+          </div>
 
-        {/* CONFIRM */}
-        <input
-          type="password"
-          name="confirm"
-          placeholder="Retype new password"
-          className="input-box mb-3"
-          onChange={handleChange}
-        />
+          <div className="field">
+            <label htmlFor="confirm">Retype new password</label>
+            <input id="confirm" type="password" name="confirm" onChange={handleChange} />
+          </div>
 
-        {/* FORGOT */}
-        <p className="text-blue-500 text-sm mb-3 cursor-pointer">
-          Forgotten your password?
-        </p>
-
-        {/* CHECKBOX */}
-        <div className="flex items-start gap-2 mb-5">
-          <input
-            type="checkbox"
-            name="logoutAll"
-            onChange={handleChange}
-          />
-          <p className="text-sm text-gray-600">
+          <label className="feature-copy" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <input type="checkbox" name="logoutAll" onChange={handleChange} />
             Log out of other devices if someone else used your account.
-          </p>
+          </label>
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="primary-btn"
+            disabled={!form.newPass || !form.confirm}
+          >
+            Change Password
+          </button>
         </div>
-
-        {/* BUTTON */}
-        <button
-          onClick={handleSubmit}
-          className={`w-full py-3 rounded-xl text-white font-semibold transition ${
-            form.newPass && form.confirm
-              ? "bg-blue-500 hover:bg-blue-600"
-              : "bg-blue-300 cursor-not-allowed"
-          }`}
-        >
-          Change password
-        </button>
-
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
 

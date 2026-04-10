@@ -13,10 +13,10 @@
   --line: rgba(45, 102, 220, 0.12);
   --text: #101827;
   --muted: #657386;
-  --accent: #2d66dc;
-  --accent-strong: #2458c8;
-  --accent-soft: rgba(45, 102, 220, 0.1);
-  --teal: #2458c8;
+  --accent: #2458c8;
+  --accent-strong: #1d46a3;
+  --accent-soft: rgba(36, 88, 200, 0.12);
+  --teal: #1d46a3;
   --lime: #cfd8e6;
   --warning: #c7922e;
   --danger: #c45b5b;
@@ -97,12 +97,6 @@ select {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 34px 0 64px;
-}
-
-.global-back-wrap {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding-top: 14px;
 }
 
 .app-navbar {
@@ -485,13 +479,6 @@ select {
   }
 }
 
-.global-back-btn {
-  min-width: 108px;
-  border: 1px solid rgba(21, 34, 53, 0.08);
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-}
-
 .hero-card,
 .surface-card {
   border: 1px solid var(--line);
@@ -651,7 +638,7 @@ select {
   align-items: center;
   justify-content: center;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  background: linear-gradient(135deg, #2d66dc, #173f99);
   color: white;
   font-size: 24px;
   box-shadow: 0 14px 28px rgba(45, 102, 220, 0.24);

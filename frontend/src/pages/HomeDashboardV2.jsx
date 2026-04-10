@@ -6,7 +6,6 @@ const vehicleOptions = [
   {
     title: "Car",
     description: "Emergency mechanics, EV support, tyre help, detailing, and SOS dispatch.",
-    accent: "linear-gradient(135deg, #1f6f63, #2d9687)",
     icon: "C",
     cta: "Open Car Services",
     path: "/dashboard",
@@ -14,7 +13,6 @@ const vehicleOptions = [
   {
     title: "Bike",
     description: "Fast bike breakdown support, tyre and tube service, fuel help, and home pickup care.",
-    accent: "linear-gradient(135deg, #d46a3a, #c35241)",
     icon: "B",
     cta: "Open Bike Services",
     path: "/bike-dashboard",
@@ -209,7 +207,7 @@ function HomeDashboardV2() {
               }
             }}
           >
-            <div className="feature-icon" style={{ background: option.accent }}>
+            <div className="feature-icon">
               {option.icon}
             </div>
             <h2 className="feature-title">{option.title}</h2>

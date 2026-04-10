@@ -163,15 +163,7 @@ function CarDashboardV2() {
               }
             }}
           >
-            <div
-              className="feature-icon"
-              style={{
-                background:
-                  index % 2 === 0
-                    ? "linear-gradient(135deg, #1f6f63, #2d9687)"
-                    : "linear-gradient(135deg, #d46a3a, #b84f24)",
-              }}
-            >
+            <div className="feature-icon">
               {String(index + 1).padStart(2, "0")}
             </div>
             <h2 className="feature-title">{item.title}</h2>

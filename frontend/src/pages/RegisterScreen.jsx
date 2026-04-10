@@ -57,7 +57,7 @@ function RegisterScreen() {
           <div className="auth-metrics">
             <div className="auth-metric">
               <strong>Request once, track everywhere</strong>
-              <p>Frontend and backend stay aligned so service data appears consistently across screens.</p>
+              <p>Your bookings, assigned support, wallet, and profile stay consistent across screens.</p>
             </div>
             <div className="auth-metric">
               <strong>Designed like a product</strong>

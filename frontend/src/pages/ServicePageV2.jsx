@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  getEvBaseVisitPrice,
+  getEvCapacityPrice,
+  getFuelDeliveryFee,
+  getFuelRatePerLitre,
+  parseNumericInput,
+} from "../utils/requestUtils";
 
 const extras = [
   { name: "Brake adjustment", price: 200 },
@@ -370,47 +377,6 @@ const bikeEngineJobOptions = [
   { value: "full-engine-diagnosis", label: "Full engine diagnosis", price: 799 },
 ];
 
-const getEvCapacityPrice = (chargerCapacity) => {
-  const kwMatch = String(chargerCapacity).match(/(\d+(\.\d+)?)/);
-  const kwValue = kwMatch ? Number(kwMatch[1]) : 0;
-
-  if (!kwValue) {
-    return 0;
-  }
-
-  if (kwValue <= 3.3) {
-    return 249;
-  }
-
-  if (kwValue <= 7.4) {
-    return 399;
-  }
-
-  if (kwValue <= 15) {
-    return 699;
-  }
-
-  if (kwValue <= 30) {
-    return 999;
-  }
-
-  return 1499;
-};
-
-const getFuelRatePerLitre = (fuelType) => {
-  const normalizedFuelType = String(fuelType).trim().toLowerCase();
-
-  if (normalizedFuelType === "diesel") {
-    return 94;
-  }
-
-  if (normalizedFuelType === "petrol") {
-    return 106;
-  }
-
-  return 0;
-};
-
 function ServicePageV2() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -474,11 +440,11 @@ function ServicePageV2() {
     helper: "Open nearby service providers in Google Maps.",
   };
 
-  const evBaseVisitPrice = isEvCharging ? (vehicleType === "Bike" ? 249 : 399) : 0;
-  const evCapacityPrice = isEvCharging ? getEvCapacityPrice(chargerCapacity) : 0;
-  const fuelDeliveryFee = isFuelDelivery ? (vehicleType === "Bike" ? 149 : 199) : 0;
+  const evBaseVisitPrice = isEvCharging ? getEvBaseVisitPrice(vehicleType) : 0;
+  const evCapacityPrice = isEvCharging ? getEvCapacityPrice(chargerCapacity, vehicleType) : 0;
+  const fuelDeliveryFee = isFuelDelivery ? getFuelDeliveryFee(vehicleType) : 0;
   const fuelRatePerLitre = isFuelDelivery ? getFuelRatePerLitre(presetFuelType) : 0;
-  const fuelLitres = isFuelDelivery ? Number(fuelQuantity || 0) : 0;
+  const fuelLitres = isFuelDelivery ? parseNumericInput(fuelQuantity) : 0;
   const fuelCost = isFuelDelivery ? Math.round(fuelRatePerLitre * fuelLitres) : 0;
   const activeRoadsideOptions =
     vehicleType === "Bike" ? bikeRoadsideAssistanceOptions : roadsideAssistanceOptions;
@@ -771,7 +737,7 @@ function ServicePageV2() {
         serviceType,
         serviceLabel,
         vehicleType,
-        fuelType: presetFuelType,
+        fuelType: isFuelDelivery ? presetFuelType : "",
         packageName: "",
         packagePrice: 0,
         price: total,
@@ -834,7 +800,7 @@ function ServicePageV2() {
             <span className="info-chip">
               ETA: {serviceType === "Fuel Delivery" ? "15-25 min" : "10-20 min"}
             </span>
-            <span className="info-chip">Fuel: {presetFuelType || "Not required"}</span>
+            {isFuelDelivery ? <span className="info-chip">Fuel: {presetFuelType || "Select fuel"}</span> : null}
             {isEvCharging ? (
               <span className="info-chip">
                 Pricing: {vehicleType === "Bike" ? "Rs 249" : "Rs 399"} visit + charger capacity
@@ -1629,9 +1595,6 @@ function ServicePageV2() {
         </div>
 
         <div className="inline-actions" style={{ marginTop: "24px" }}>
-          <button type="button" className="secondary-btn" onClick={() => navigate(-1)}>
-            Back
-          </button>
           <button type="button" className="primary-btn" onClick={continueToRequest}>
             Continue to Request
           </button>
