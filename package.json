@@ -1,4 +1,12 @@
 {
+  "name": "autoassist",
+  "version": "1.0.0",
+  "description": "Full-stack roadside assistance platform for booking vehicle help, tracking requests, and managing users.",
+  "homepage": "https://autoassist-frontend.onrender.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayushksingh-19/autoassist.git"
+  },
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
     "check": "npm run check --prefix backend",
