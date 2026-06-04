@@ -22,8 +22,6 @@ const noSqlSanitize = require("./src/middlewares/noSqlSanitize");
 const app = express();
 const server = http.createServer(app);
 
-connectDB();
-
 app.set("trust proxy", 1);
 
 app.use(
@@ -106,6 +104,17 @@ io.on("connection", (socket) => {
   }
 });
 
-server.listen(env.port, () => {
-  console.log(`Server running on port ${env.port}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    server.listen(env.port, () => {
+      console.log(`Server running on port ${env.port}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();

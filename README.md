@@ -210,6 +210,16 @@ REACT_APP_API_URL=https://autoassist-backend-z6mz.onrender.com/api
 - Allow Render access in MongoDB Atlas Network Access.
 - Keep `.env` files private.
 
+## License and Usage
+
+This repository is provided for frontend learning and project reference purposes only.
+
+- You may study the code and run it locally for personal learning.
+- You may not copy, redistribute, republish, sell, or claim this work as your own.
+- Copyright remains with the original author.
+
+See [LICENSE.md](LICENSE.md) for the full usage terms.
+
 ## Author
 
 Built by [ayushksingh-19](https://github.com/ayushksingh-19).

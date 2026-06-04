@@ -10,6 +10,12 @@ if (missingVariables.length) {
   throw new Error(`Missing required environment variables: ${missingVariables.join(", ")}`);
 }
 
+const placeholderValues = ["<username>", "<password>", "<cluster>", "<database>", "cluster-name.xxxx"];
+
+if (placeholderValues.some((value) => process.env.MONGO_URI.includes(value))) {
+  throw new Error("MONGO_URI still contains placeholder text. Replace it with the exact MongoDB Atlas connection string.");
+}
+
 if (isProduction && process.env.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be at least 32 characters in production.");
 }

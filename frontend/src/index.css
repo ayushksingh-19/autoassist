@@ -3385,6 +3385,16 @@ select {
 }
 
 @media (max-width: 720px) {
+  html,
+  body,
+  #root,
+  .app-shell,
+  .explore-shell {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   .floating-call-btn {
     right: 18px;
     bottom: 18px;
@@ -3418,6 +3428,25 @@ select {
     padding-top: 20px;
   }
 
+  .page-shell,
+  .auth-shell,
+  .explore-shell,
+  .explore-nav,
+  .explore-hero,
+  .explore-section-head,
+  .explore-feature-grid,
+  .explore-service-grid,
+  .explore-testimonial-marquee,
+  .explore-stats-row,
+  .explore-cta-card,
+  .explore-footer,
+  .hero-card,
+  .surface-card,
+  .list-card,
+  .summary-card {
+    max-width: 100%;
+  }
+
   .grid-two {
     grid-template-columns: 1fr;
   }
@@ -3434,15 +3463,78 @@ select {
   }
 
   .explore-nav {
+    width: min(100% - 24px, 1220px);
     align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 
   .explore-nav-actions {
-    justify-content: flex-end;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .explore-primary-btn,
+  .explore-secondary-btn,
+  .explore-light-btn,
+  .primary-btn,
+  .secondary-btn,
+  .ghost-btn {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .explore-hero {
+    width: min(100% - 24px, 1220px);
+    gap: 28px;
+    padding: 42px 0 64px;
+  }
+
+  .explore-hero::before {
+    display: none;
   }
 
   .explore-hero h1 {
-    font-size: clamp(2.8rem, 18vw, 4.8rem);
+    font-size: clamp(2.35rem, 16vw, 4rem);
+    overflow-wrap: anywhere;
+  }
+
+  .explore-hero p,
+  .section-copy,
+  .feature-copy,
+  .summary-card p,
+  .explore-card p {
+    overflow-wrap: anywhere;
+  }
+
+  .explore-live-card {
+    width: 100%;
+    padding: 24px;
+  }
+
+  .explore-live-card-top {
+    align-items: flex-start;
+  }
+
+  .explore-feature-grid,
+  .explore-service-grid,
+  .explore-stats-row,
+  .explore-section-head {
+    width: min(100% - 24px, 1220px);
+  }
+
+  .explore-testimonial-marquee {
+    width: min(100% - 24px, 1220px);
+    mask-image: none;
+  }
+
+  .explore-testimonial {
+    min-width: min(82vw, 320px);
+  }
+
+  .explore-testimonial-track {
+    gap: 14px;
   }
 
   .explore-service-card {
@@ -3450,6 +3542,49 @@ select {
   }
 
   .explore-cta-card {
+    width: min(100% - 24px, 840px);
     padding: 36px 22px;
+  }
+
+  .explore-footer {
+    padding: 38px 20px;
+  }
+
+  .inline-actions,
+  .app-navbar-actions {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .inline-actions > *,
+  .app-navbar-actions > * {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 390px) {
+  .app-navbar-inner,
+  .page-shell,
+  .explore-nav,
+  .explore-hero,
+  .explore-feature-grid,
+  .explore-service-grid,
+  .explore-testimonial-marquee,
+  .explore-stats-row,
+  .explore-cta-card {
+    width: min(100% - 18px, 1220px);
+  }
+
+  .explore-primary-btn,
+  .explore-secondary-btn,
+  .explore-light-btn,
+  .primary-btn,
+  .secondary-btn,
+  .ghost-btn {
+    width: 100%;
+  }
+
+  .explore-testimonial {
+    min-width: min(86vw, 300px);
   }
 }
