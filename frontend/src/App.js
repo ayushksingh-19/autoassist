@@ -32,6 +32,8 @@ import ExplorePage from "./pages/ExplorePage";
 import PremiumPackagesPage from "./pages/PremiumPackagesPage";
 import FloatingCallButton from "./components/FloatingCallButton";
 import EmergencyCallPage from "./pages/EmergencyCallPage";
+import { useEffect } from "react";
+import API from "./services/api";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -53,6 +55,11 @@ function Layout({ children }) {
 }
 
 function App() {
+  useEffect(() => {
+    // Wake a sleeping hosted API while the user is browsing the public pages.
+    API.get("/health").catch(() => {});
+  }, []);
+
   return (
     <Router>
       <Layout>
