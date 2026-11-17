@@ -4,7 +4,10 @@ AutoAssist is a full-stack roadside assistance web app for booking vehicle help,
 
 ## Live Demo
 
-[Open AutoAssist](https://autoassist-1.onrender.com)
+- **Frontend:** [Open AutoAssist](https://autoassist-1.onrender.com/)
+- **Login:** [Sign in](https://autoassist-1.onrender.com/login)
+- **Register:** [Create an account](https://autoassist-1.onrender.com/register)
+- **Backend health:** [Check API status](https://autoassist-j0zr.onrender.com/api/health)
 
 
 
@@ -104,8 +107,8 @@ REACT_APP_API_URL=http://localhost:5000/api
 For production on Render:
 
 ```env
-FRONTEND_URL=(https://autoassist-1.onrender.com)
-REACT_APP_API_URL=https://autoassist-backend-z6mz.onrender.com/api
+FRONTEND_URL=https://autoassist-1.onrender.com
+REACT_APP_API_URL=https://autoassist-j0zr.onrender.com/api
 ```
 
 Never commit real `.env` files or secrets.
@@ -193,13 +196,13 @@ Publish Directory: build
 After deployment, make sure the backend has:
 
 ```env
-FRONTEND_URL=https://autoassist-frontend.onrender.com
+FRONTEND_URL=https://autoassist-1.onrender.com
 ```
 
 And the frontend has:
 
 ```env
-REACT_APP_API_URL=https://autoassist-backend-z6mz.onrender.com/api
+REACT_APP_API_URL=https://autoassist-j0zr.onrender.com/api
 ```
 
 ## Security Notes
