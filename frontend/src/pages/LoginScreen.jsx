@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authApi";
 import BrandLogo from "../components/BrandLogo";
+import PasswordInput from "../components/PasswordInput";
 
 function LoginScreen() {
   const navigate = useNavigate();
@@ -76,10 +77,9 @@ function LoginScreen() {
 
             <div className="field">
               <label htmlFor="password">Password</label>
-              <input
+              <PasswordInput
                 id="password"
                 name="password"
-                type="password"
                 placeholder="Enter your password"
                 value={form.password}
                 onChange={handleChange}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PasswordInput from "../components/PasswordInput";
 
 function ChangePassword() {
   const navigate = useNavigate();
@@ -47,17 +48,17 @@ function ChangePassword() {
         <div className="stack">
           <div className="field">
             <label htmlFor="current">Current password</label>
-            <input id="current" type="password" name="current" onChange={handleChange} />
+            <PasswordInput id="current" name="current" onChange={handleChange} />
           </div>
 
           <div className="field">
             <label htmlFor="newPass">New password</label>
-            <input id="newPass" type="password" name="newPass" onChange={handleChange} />
+            <PasswordInput id="newPass" name="newPass" onChange={handleChange} />
           </div>
 
           <div className="field">
             <label htmlFor="confirm">Retype new password</label>
-            <input id="confirm" type="password" name="confirm" onChange={handleChange} />
+            <PasswordInput id="confirm" name="confirm" onChange={handleChange} />
           </div>
 
           <label className="feature-copy" style={{ display: "flex", gap: "10px", alignItems: "center" }}>

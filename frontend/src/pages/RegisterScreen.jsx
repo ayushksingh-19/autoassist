@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authApi";
 import BrandLogo from "../components/BrandLogo";
+import PasswordInput from "../components/PasswordInput";
 
 function RegisterScreen() {
   const navigate = useNavigate();
@@ -113,10 +114,9 @@ function RegisterScreen() {
             <div className="grid-two">
               <div className="field">
                 <label htmlFor="password">Password</label>
-                <input
+                <PasswordInput
                   id="password"
                   name="password"
-                  type="password"
                   placeholder="Create password"
                   value={form.password}
                   onChange={handleChange}
@@ -126,10 +126,9 @@ function RegisterScreen() {
 
               <div className="field">
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
+                <PasswordInput
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
                   placeholder="Repeat password"
                   value={form.confirmPassword}
                   onChange={handleChange}
