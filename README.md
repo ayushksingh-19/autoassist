@@ -4,7 +4,7 @@ AutoAssist is a full-stack roadside assistance web app for booking vehicle help,
 
 ## Live Demo
 
-[Open AutoAssist](https://autoassist-frontend.onrender.com/)
+[Open AutoAssist](https://autoassist-1.onrender.com)
 
 
 
@@ -104,7 +104,7 @@ REACT_APP_API_URL=http://localhost:5000/api
 For production on Render:
 
 ```env
-FRONTEND_URL=https://autoassist-frontend.onrender.com
+FRONTEND_URL=(https://autoassist-1.onrender.com)
 REACT_APP_API_URL=https://autoassist-backend-z6mz.onrender.com/api
 ```
 
