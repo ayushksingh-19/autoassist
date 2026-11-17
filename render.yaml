@@ -38,7 +38,7 @@ services:
     staticPublishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        sync: false
+        value: https://autoassist-j0zr.onrender.com/api
     routes:
       - type: rewrite
         source: /*
