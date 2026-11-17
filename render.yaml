@@ -15,7 +15,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: https://autoassist-frontend.onrender.com
       - key: JWT_EXPIRES_IN
         value: 1d
       - key: REQUEST_BODY_LIMIT
@@ -38,7 +38,7 @@ services:
     staticPublishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        sync: false
+        value: https://autoassist-backend-z6mz.onrender.com/api
     routes:
       - type: rewrite
         source: /*
