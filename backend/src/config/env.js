@@ -27,7 +27,10 @@ if (!isProduction && process.env.JWT_SECRET.length < 32) {
 const fallbackNonce = crypto.randomBytes(16).toString("hex");
 
 const parseAllowedOrigins = () => {
-  const configuredOrigins = process.env.FRONTEND_URL || "http://localhost:3000";
+  const defaultOrigin = isProduction
+    ? "https://autoassist-1.onrender.com"
+    : "http://localhost:3000";
+  const configuredOrigins = process.env.FRONTEND_URL || defaultOrigin;
 
   return configuredOrigins
     .split(",")

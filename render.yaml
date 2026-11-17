@@ -15,7 +15,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: FRONTEND_URL
-        value: https://autoassist-frontend.onrender.com
+        value: https://autoassist-1.onrender.com
       - key: JWT_EXPIRES_IN
         value: 1d
       - key: REQUEST_BODY_LIMIT
